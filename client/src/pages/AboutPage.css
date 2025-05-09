@@ -1,0 +1,45 @@
+.about-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #161b22;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #d1d5db;
+}
+
+.about-title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #3b82f6; /* Blueish */
+}
+
+.about-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s forwards;
+}
+
+.about-text.delay-1 {
+  animation-delay: 0.3s;
+}
+
+.about-text.delay-2 {
+  animation-delay: 0.6s;
+}
+
+.highlight {
+  color: #60a5fa; /* Soft blue */
+  font-weight: bold;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

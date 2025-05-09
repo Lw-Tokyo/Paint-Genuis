@@ -1,0 +1,41 @@
+/* src/components/budget/RoomDimensionsForm.css */
+.room-dimensions-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.room-form {
+  width: 100%;
+  max-width: 500px;
+  background-color: #e9ecef;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.room-form:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.room-form .form-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.room-form .form-control {
+  border-radius: 0.5rem;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+}
+
+.room-form .btn-primary {
+  background-color: #28a745;
+  border-color: #28a745;
+  padding: 0.75rem;
+  font-weight: 600;
+}
+
+.room-form .btn-primary:hover {
+  background-color: #218838;
+}
