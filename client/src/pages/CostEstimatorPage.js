@@ -25,33 +25,41 @@ function CostEstimatorPage() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setShowSkeleton(true);
-    setEstimate(null);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setShowSkeleton(true);
+  setEstimate(null);
+  setError('');
 
-    try {
-      const response = await axios.post('http://localhost:5000/api/estimate', formData);
-      setTimeout(() => {
-        setEstimate(response.data.totalCost);
-        setShowSuccess(true);
-        setShowSkeleton(false);
-        setFormData({
-          length: '',
-          width: '',
-          height: '',
-          paintType: 'standard',
-        });
-      }, 1500); // slight delay for skeleton effect
-    } catch (err) {
-      console.error('Error:', err);
-      setError('Failed to calculate estimate. Please check your inputs or try again later.');
+  try {
+    const payload = {
+      length: formData.length,
+      width: formData.width,
+      height: formData.height,
+      paintType: formData.paintType,
+    };
+
+    const response = await axios.post('http://localhost:5000/api/estimate', payload);
+    setTimeout(() => {
+      setEstimate(response.data.totalCost);
+      setShowSuccess(true);
       setShowSkeleton(false);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setFormData({
+        length: '',
+        width: '',
+        height: '',
+        paintType: 'standard',
+      });
+    }, 1500);
+  } catch (err) {
+    console.error('Error:', err);
+    setError('Failed to calculate estimate. Please check your inputs or try again later.');
+    setShowSkeleton(false);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     if (showSuccess) {

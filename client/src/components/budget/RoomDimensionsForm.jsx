@@ -1,18 +1,33 @@
-// src/components/budget/RoomDimensionsForm.jsx
-import React, { useState } from "react";
+// client/src/components/budget/RoomDimensionsForm.jsx
+import React, { useState, useEffect } from "react";
 import "./RoomDimensionsForm.css";
 
-function RoomDimensionsForm({ onSubmit }) {
-  const [dimensions, setDimensions] = useState({ length: "", width: "", height: "" });
-
+function RoomDimensionsForm({ onSubmit, initialDimensions = null }) {
+  const [dimensions, setDimensions] = useState({
+    length: initialDimensions?.length || "",
+    width: initialDimensions?.width || "",
+    height: initialDimensions?.height || ""
+  });
+  
+  // Update form values if initialDimensions prop changes
+  useEffect(() => {
+    if (initialDimensions) {
+      setDimensions({
+        length: initialDimensions.length || "",
+        width: initialDimensions.width || "",
+        height: initialDimensions.height || ""
+      });
+    }
+  }, [initialDimensions]);
+  
   const handleChange = (e) => {
     setDimensions({ ...dimensions, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const { length, width, height } = dimensions;
-
+        
     if (length && width && height) {
       onSubmit({
         length: Number(length),
@@ -21,7 +36,7 @@ function RoomDimensionsForm({ onSubmit }) {
       });
     }
   };
-
+  
   return (
     <div className="room-dimensions-form-container">
       <form onSubmit={handleSubmit} className="room-form shadow p-4 rounded">
@@ -35,6 +50,8 @@ function RoomDimensionsForm({ onSubmit }) {
             value={dimensions.length}
             onChange={handleChange}
             placeholder="Enter length"
+            min="0.01"
+            step="0.01"
             required
           />
         </div>
@@ -47,6 +64,8 @@ function RoomDimensionsForm({ onSubmit }) {
             value={dimensions.width}
             onChange={handleChange}
             placeholder="Enter width"
+            min="0.01"
+            step="0.01"
             required
           />
         </div>
@@ -59,6 +78,8 @@ function RoomDimensionsForm({ onSubmit }) {
             value={dimensions.height}
             onChange={handleChange}
             placeholder="Enter height"
+            min="0.01"
+            step="0.01"
             required
           />
         </div>

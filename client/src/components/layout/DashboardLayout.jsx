@@ -1,7 +1,6 @@
 // src/components/layout/DashboardLayout.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-//import { motion } from "framer-motion";
 import AuthService from "../../services/AuthService";
 
 function DashboardLayout({ children, role }) {
@@ -58,9 +57,6 @@ function DashboardLayout({ children, role }) {
       {/* Main Content */}
       <div
         className="flex-grow-1 p-4 overflow-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
       >
         {children}
       </div>

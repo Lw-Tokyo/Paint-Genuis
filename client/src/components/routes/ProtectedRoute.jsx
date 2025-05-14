@@ -6,14 +6,18 @@ import AuthService from "../../services/AuthService";
 function ProtectedRoute({ allowedRoles }) {
   const user = AuthService.getCurrentUser();
 
+  // Redirect to auth page if not logged in
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/auth" />;
   }
 
+  // Redirect if user doesn't have allowed role
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/" />;
+    // Redirect to their proper dashboard instead of "/"
+    return <Navigate to={`/${user.role}/dashboard`} />;
   }
 
+  // Don't wrap with DashboardLayout here as each dashboard component already uses it
   return <Outlet />;
 }
 

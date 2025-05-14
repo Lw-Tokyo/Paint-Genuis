@@ -1,7 +1,8 @@
+// client/src/components/budget/BudgetHistory.jsx
 import React from "react";
 import "./BudgetHistory.css";
 
-const BudgetHistory = ({ history = [] }) => {
+const BudgetHistory = ({ history = [], onDelete }) => {
   if (!Array.isArray(history) || history.length === 0) {
     return <div className="text-center mt-3">No budget history available yet.</div>;
   }
@@ -12,15 +13,27 @@ const BudgetHistory = ({ history = [] }) => {
         <div key={index} className="history-entry">
           <div className="entry-header">
             <h5>Entry {index + 1}</h5>
-            <span>{new Date(entry.date).toLocaleDateString()}</span>
+            <div>
+              <span className="date-badge">{new Date(entry.date).toLocaleDateString()}</span>
+              {onDelete && (
+                <button 
+                  className="btn btn-sm btn-danger ms-2"
+                  onClick={() => onDelete(index)}
+                  aria-label="Delete entry"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
           <div className="entry-details">
             <p>Min Budget: ${entry.min}</p>
             <p>Max Budget: ${entry.max}</p>
-            <p>Dimensions: 
+            <p>Dimensions:
               {entry.dimensions?.length}m x {entry.dimensions?.width}m x {entry.dimensions?.height}m
             </p>
-            <p>Area: {entry.dimensions?.area || "N/A"} sq.m</p>
+            <p>Area: {entry.dimensions?.area || 
+              (entry.dimensions ? (entry.dimensions.length * entry.dimensions.width).toFixed(2) : "N/A")} sq.m</p>
             <p>Estimate: ${entry.estimate}</p>
             <p>Coats: {entry.coats}</p>
             <p>Recommendations: {entry.recommendations?.join(", ") || "None"}</p>

@@ -1,30 +1,39 @@
+// controllers/estimateController.js
 exports.calculateEstimate = (req, res) => {
+  try {
     const { length, width, height, paintType } = req.body;
-  
-    if (!length || !width || !height || !paintType) {
-      return res.status(400).json({ message: "All fields are required." });
+
+    if (!length || !width || !height) {
+      return res.status(400).json({ error: "Length, width, and height are required" });
     }
-  
-    const wallArea = 2 * height * (length + width);
+
+    const numericLength = parseFloat(length);
+    const numericWidth = parseFloat(width);
+    const numericHeight = parseFloat(height);
+
+    if (isNaN(numericLength) || isNaN(numericWidth) || isNaN(numericHeight)) {
+      return res.status(400).json({ error: "All dimensions must be valid numbers" });
+    }
+
+    const area = 2 * (numericLength * numericHeight + numericWidth * numericHeight) + (numericLength * numericWidth);
     
-    // Dummy pricing based on type
-    const paintPrices = {
-      "affordable": 0.4,
-      "mid-range": 0.6,
-      "high-end": 1.0
-    };
-  
-    const laborRate = 0.25;
-  
-    const paintCost = wallArea * (paintPrices[paintType] || 0.6);
-    const laborCost = wallArea * laborRate;
-    const totalCost = paintCost + laborCost;
-  
-    res.json({
-      area: wallArea,
-      paintCost: Math.round(paintCost),
-      laborCost: Math.round(laborCost),
-      totalCost: Math.round(totalCost)
-    });
-  };
-  
+    let costPerSqFt;
+    switch (paintType) {
+      case "premium":
+        costPerSqFt = 2.5;
+        break;
+      case "luxury":
+        costPerSqFt = 3.5;
+        break;
+      default:
+        costPerSqFt = 1.5;
+    }
+
+    const totalCost = area * costPerSqFt;
+
+    res.json({ totalCost });
+  } catch (err) {
+    console.error("Error calculating estimate:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

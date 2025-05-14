@@ -1,8 +1,9 @@
 // src/App.js
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { UserContext } from "./context/UserContext";
 
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
@@ -15,6 +16,7 @@ import CostEstimatorPage from "./pages/CostEstimatorPage";
 import BudgetPage from "./pages/BudgetPage";
 import WallColorVisualizer from "./components/WallColorVisualizer";
 import WallMaskGenerator from "./components/WallMaskGenerator";
+import { UserProvider } from "./context/UserContext"; 
 
 // Dashboards
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
@@ -27,11 +29,17 @@ import AuthPage from "./pages/AuthPage";
 // Routes
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
-function App() {
+function AppContent() {
+  const { user } = useContext(UserContext);
+  const isDashboardPage = window.location.pathname.includes('/dashboard');
+  
+  // Apply container class only for non-dashboard pages
+  const mainClassName = isDashboardPage && user ? "" : "container py-4";
+
   return (
     <Router>
       <Navbar />
-      <main className="container py-4">
+      <main className={mainClassName}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -46,24 +54,23 @@ function App() {
           <Route path="/WallColorVisualizer" element={<WallColorVisualizer />} />
           <Route path="/WallMaskGenerator" element={<WallMaskGenerator />} />
           <Route path="/auth" element={<AuthPage />} />
-
-
+          
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/messages" element={<MessagesPage />} />
           </Route>
-
+          
           {/* Contractor Routes */}
           <Route element={<ProtectedRoute allowedRoles={["contractor"]} />}>
             <Route path="/contractor/dashboard" element={<ContractorDashboard />} />
           </Route>
-
+          
           {/* Painter Routes */}
           <Route element={<ProtectedRoute allowedRoles={["painter"]} />}>
             <Route path="/painter/dashboard" element={<PainterDashboard />} />
           </Route>
-
+          
           {/* Client Routes */}
           <Route element={<ProtectedRoute allowedRoles={["client"]} />}>
             <Route path="/client/dashboard" element={<ClientDashboard />} />
@@ -72,6 +79,14 @@ function App() {
       </main>
       <Footer />
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
   );
 }
 

@@ -1,110 +1,101 @@
+// server/controllers/budgetController.js
 const Budget = require("../models/Budget");
 
 // Helper function to determine paint recommendations based on budget
 const getPaintRecommendations = (budgetMax, estimate) => {
   const recommendations = [];
-
-  if (estimate <= budgetMax) {
-    recommendations.push("Standard");
-  }
-  if (estimate * 1.25 <= budgetMax) {
-    recommendations.push("Premium");
-  }
-  if (estimate * 1.5 <= budgetMax) {
-    recommendations.push("Luxury");
-  }
-
+  if (estimate <= budgetMax) recommendations.push("Standard");
+  if (estimate * 1.25 <= budgetMax) recommendations.push("Premium");
+  if (estimate * 1.5 <= budgetMax) recommendations.push("Luxury");
   return recommendations;
 };
 
-// Helper function to create history entry
-const createHistoryEntry = (budget) => {
-  return {
-    min: budget.min,
-    max: budget.max,
-    dimensions: budget.dimensions,
-    estimate: budget.estimate,
-    recommendations: budget.recommendations,
-    coats: budget.coats,
-  };
-};
-
 // Save or update budget and dimensions
-exports.saveBudget = async (req, res) => {
-  const { userId, min, max, dimensions } = req.body;
+exports.saveBudget = async (data) => {
+  const { userId, min, max, dimensions } = data;
+
+  if (!userId || min === undefined || max === undefined) {
+    throw new Error("User ID, min, and max are required");
+  }
 
   try {
     let budget = await Budget.findOne({ userId });
+    
+    // Handle initial budget setting (no dimensions yet)
+    if (!dimensions) {
+      if (budget) {
+        // Update existing budget without dimensions
+        budget.min = min;
+        budget.max = max;
+        await budget.save();
+      } else {
+        // Create new budget without dimensions
+        budget = await Budget.create({
+          userId,
+          min,
+          max,
+          history: [] // Initialize with empty history
+        });
+      }
+      return budget;
+    }
 
-    // Calculate area and estimate
-    const area = dimensions.length * dimensions.width;
-    const estimate = area * 1.5 * dimensions.height * 3; // 3 coats by default
+    // If dimensions are provided, calculate area and estimate
+    if (dimensions.length && dimensions.width && dimensions.height) {
+      const area = dimensions.length * dimensions.width;
+      const estimate = area * 1.5 * dimensions.height * 3; // 3 coats by default
 
-    // Determine paint recommendations based on budget and estimate
-    const recommendations = getPaintRecommendations(max, estimate);
+      const recommendations = getPaintRecommendations(max, estimate);
 
-    const updatedDimensions = {
-      ...dimensions,
-      area,
-    };
-
-    const newHistoryEntry = {
-      min,
-      max,
-      dimensions: updatedDimensions,
-      estimate,
-      recommendations,
-      coats: 3,
-    };
-
-    if (budget) {
-      // Save previous state to history
-      budget.history.push(createHistoryEntry(budget));
-
-      // Update current budget
-      budget.min = min;
-      budget.max = max;
-      budget.dimensions = updatedDimensions;
-      budget.estimate = estimate;
-      budget.recommendations = recommendations;
-      budget.coats = 3;
-
-      await budget.save();
-    } else {
-      // Create new budget record
-      budget = await Budget.create({
-        userId,
+      const newHistoryEntry = {
         min,
         max,
-        dimensions: updatedDimensions,
+        dimensions,
         estimate,
         recommendations,
         coats: 3,
-        history: [newHistoryEntry],
-      });
+        date: new Date()
+      };
+
+      if (budget) {
+        // Only add to history if we already have estimates
+        if (budget.estimate) {
+          budget.history.push({
+            min: budget.min,
+            max: budget.max,
+            dimensions: budget.dimensions,
+            estimate: budget.estimate,
+            recommendations: budget.recommendations,
+            coats: budget.coats,
+            date: new Date()
+          });
+        }
+
+        budget.min = min;
+        budget.max = max;
+        budget.dimensions = dimensions;
+        budget.estimate = estimate;
+        budget.recommendations = recommendations;
+        budget.coats = 3;
+
+        await budget.save();
+      } else {
+        budget = await Budget.create({
+          userId,
+          min,
+          max,
+          dimensions,
+          estimate,
+          recommendations,
+          coats: 3,
+          history: [newHistoryEntry],
+        });
+      }
     }
 
-    res.status(200).json(budget);
+    return budget;
   } catch (err) {
     console.error("Error saving budget:", err.message);
-    res.status(500).json({ message: "Server error saving budget" });
-  }
-};
-
-// Get budget by userId including history
-exports.getBudget = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const budget = await Budget.findOne({ userId });
-
-    if (!budget) {
-      return res.status(404).json({ message: "Budget not found" });
-    }
-
-    res.status(200).json(budget);
-  } catch (err) {
-    console.error("Error fetching budget:", err.message);
-    res.status(500).json({ message: "Server error fetching budget" });
+    throw err;
   }
 };

@@ -1,3 +1,4 @@
+// server/models/Budget.js
 const mongoose = require("mongoose");
 
 const dimensionSchema = new mongoose.Schema({
@@ -32,7 +33,6 @@ const budgetSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
     },
     min: {
       type: Number,

@@ -1,11 +1,11 @@
 import React from 'react';
-import AdvancedVisualizer from './AdvancedVisualizer';
-import './WallColorVisualizer.css';
+import PremiumWallColorVisualizer from './PremiumWallColorVisualizer';
+import './PremiumWallColorVisualizer.css';
 
 function WallColorVisualizer() {
   return (
     <div className="app-container">
-      <AdvancedVisualizer />
+      <PremiumWallColorVisualizer />
     </div>
   );
 }

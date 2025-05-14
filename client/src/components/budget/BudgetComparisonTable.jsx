@@ -1,3 +1,4 @@
+// client/src/components/budget/BudgetComparisonTable.jsx
 import React from "react";
 
 const paintOptions = [
