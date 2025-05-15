@@ -10,9 +10,9 @@ function HomePage() {
       title: "Wall Color Visualizer",
       description: "See how colors transform your space before you paint. Our premium visualizer lets you experiment with thousands of colors in realistic room settings.",
       icon: "palette",
-      path: "/visualizer",
+      path: "/WallColorVisualizer",
       ctaText: "Explore Colors",
-      image: "/visualizer-preview.jpg"
+      image: "/visualizer-preview.JPG"
     },
     {
       id: "estimate",
@@ -21,7 +21,7 @@ function HomePage() {
       icon: "calculator",
       path: "/estimate",
       ctaText: "Calculate Costs",
-      image: "/cost-estimate-preview.jpg"
+      image: "/cost-estimate-preview.JPG"
     },
     {
       id: "budget",
@@ -30,16 +30,16 @@ function HomePage() {
       icon: "wallet",
       path: "/budget",
       ctaText: "Plan Budget",
-      image: "/budget-preview.jpg"
+      image: "/budget-preview.JPG"
     },
     {
       id: "coverage",
       title: "Coverage Calculator",
       description: "Never buy too much or too little paint again. Our coverage calculator determines exactly how much paint you need for any project.",
       icon: "droplet",
-      path: "/coverage",
+      path: "/coverage-calculator",
       ctaText: "Calculate Coverage",
-      image: "/coverage-preview.jpg"
+      image: "/coverage-preview.JPG"
     }
   ];
 
@@ -83,7 +83,7 @@ function HomePage() {
             Premium painting tools to visualize, estimate, and plan your perfect project with precision
           </p>
           <div className="hero-cta">
-            <Link to="/visualizer" className="btn btn-primary">Try Color Visualizer</Link>
+            <Link to="/WallColorVisualizer" className="btn btn-primary">Try Color Visualizer</Link>
             <Link to="/estimate" className="btn btn-secondary">Get Cost Estimate</Link>
           </div>
           <div className="hero-stats">
@@ -131,7 +131,7 @@ function HomePage() {
                   </div>
                 ))}
               </div>
-              <Link to={`/visualizer?palette=${palette.name.toLowerCase().replace(' ', '-')}`} className="palette-link">
+              <Link to={`/WallColorVisualizer?palette=${palette.name.toLowerCase().replace(' ', '-')}`} className="palette-link">
                 Try this palette
               </Link>
             </div>
@@ -227,7 +227,7 @@ function HomePage() {
                 <span>Share results with friends and designers</span>
               </li>
             </ul>
-            <Link to="/visualizer" className="btn btn-primary">
+            <Link to="/WallColorVisualizer" className="btn btn-primary">
               Try Color Visualizer
             </Link>
           </div>
@@ -351,7 +351,7 @@ function HomePage() {
           <h2>Ready to Transform Your Space?</h2>
           <p>Join thousands of homeowners who have simplified their painting projects with Paint Genius</p>
           <div className="cta-buttons">
-            <Link to="/visualizer" className="btn btn-primary">Start with Color Visualizer</Link>
+            <Link to="/WallColorVisualizer" className="btn btn-primary">Start with Color Visualizer</Link>
             <Link to="/estimate" className="btn btn-outline">Get Cost Estimate</Link>
           </div>
         </div>

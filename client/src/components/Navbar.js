@@ -48,6 +48,9 @@ function Navbar() {
               <Link className="nav-link" to="/WallColorVisualizer">Visualizer</Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/coverage-calculator">Coverage</Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/about">About</Link>
             </li>
             <li className="nav-item">

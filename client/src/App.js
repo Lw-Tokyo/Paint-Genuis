@@ -17,6 +17,7 @@ import BudgetPage from "./pages/BudgetPage";
 import WallColorVisualizer from "./components/WallColorVisualizer";
 import WallMaskGenerator from "./components/WallMaskGenerator";
 import { UserProvider } from "./context/UserContext"; 
+import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
 
 // Dashboards
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
@@ -54,6 +55,7 @@ function AppContent() {
           <Route path="/WallColorVisualizer" element={<WallColorVisualizer />} />
           <Route path="/WallMaskGenerator" element={<WallMaskGenerator />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
           
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
