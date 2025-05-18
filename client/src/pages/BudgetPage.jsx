@@ -19,6 +19,7 @@ function BudgetPage() {
   const [recommendations, setRecommendations] = useState([]);
   const [showBudgetForm, setShowBudgetForm] = useState(false);
   const [showDimensionsForm, setShowDimensionsForm] = useState(false);
+  const [coats, setCoats] = useState(3);
 
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
@@ -33,11 +34,12 @@ function BudgetPage() {
       try {
         const res = await axios.get(`http://localhost:5000/api/budget/${user._id}`);
         if (res.data && res.data.min !== undefined && res.data.max !== undefined) {
-          const { min, max, dimensions, estimate, recommendations, history = [] } = res.data;
+          const { min, max, dimensions, estimate, recommendations, history = [], coats = 3 } = res.data;
           setBudget({ min, max, history });
           setRoomDimensions(dimensions);
           setEstimate(estimate || 0);
           setRecommendations(recommendations || []);
+          setCoats(coats);
         } else {
           // Initialize with empty budget for new users
           setBudget({ min: 0, max: 0, history: [] });
@@ -86,6 +88,10 @@ function BudgetPage() {
         setRoomDimensions(dimensions);
       }
       
+      if (res.data.coats) {
+        setCoats(res.data.coats);
+      }
+      
       // Hide the forms after successful submission
       setShowBudgetForm(false);
       setShowDimensionsForm(false);
@@ -94,8 +100,10 @@ function BudgetPage() {
     }
   };
 
-  const handleRoomDimensionsSubmit = (dimensions) => {
-    handleBudgetSubmit(budget.min, budget.max, dimensions);
+  const handleRoomDimensionsSubmit = (dimensionsData) => {
+    const { coats: newCoats, ...dimensions } = dimensionsData;
+    setCoats(newCoats);
+    handleBudgetSubmit(budget.min, budget.max, { ...dimensions, coats: newCoats });
   };
 
   const handleHistoryDelete = async (index) => {
@@ -167,6 +175,7 @@ function BudgetPage() {
                 <p>Width: {roomDimensions.width} ft</p>
                 <p>Height: {roomDimensions.height} ft</p>
                 <p>Area: {roomDimensions.length * roomDimensions.width} sq ft</p>
+                <p>Number of Coats: {coats}</p>
               </div>
             )}
           </div>
@@ -191,6 +200,7 @@ function BudgetPage() {
               width: roomDimensions.width,
               height: roomDimensions.height
             } : null}
+            initialCoats={coats}
           />
         </div>
       )}
@@ -200,7 +210,7 @@ function BudgetPage() {
         <>
           <BudgetAlert estimate={estimate} budget={budget} isOver={isOverBudget} />
           <BudgetRecommendations recommendations={recommendations} />
-          <BudgetComparisonTable budget={budget} />
+          <BudgetComparisonTable budget={budget} recommendations={recommendations} />
         </>
       )}
 

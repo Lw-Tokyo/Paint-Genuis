@@ -47,20 +47,20 @@ function HomePage() {
   const testimonials = [
     {
       quote: "Paint Genius saved me hundreds of dollars on my renovation by helping me calculate exactly how much paint I needed.",
-      author: "Sarah M.",
-      role: "Homeowner",
+      author: " Sarah M.",
+      role: " Homeowner",
       avatar: "/testimonial-1.jpg"
     },
     {
       quote: "The color visualizer is incredible! I was able to see exactly how my living room would look before committing to a color.",
       author: "Michael T.",
-      role: "Interior Designer",
+      role: " Interior Designer",
       avatar: "/testimonial-2.jpg"
     },
     {
       quote: "As a professional painter, the budget planner has transformed how I quote jobs. My clients love the transparency.",
-      author: "David L.",
-      role: "Professional Painter",
+      author: " Chahat Fateh Ali Khan.",
+      role: " Professional Painter",
       avatar: "/testimonial-3.jpg"
     }
   ];

@@ -1,0 +1,13 @@
+/* client/src/components/budget/BudgetComparisonTable.css */
+.comparison-table-container {
+  margin-bottom: 2rem;
+}
+
+.recommended-row {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+  font-weight: 600;
+}
+
+.recommended-row:hover {
+  background-color: rgba(25, 135, 84, 0.2) !important;
+}

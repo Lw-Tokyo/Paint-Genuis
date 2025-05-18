@@ -1,0 +1,18 @@
+/* client/src/components/budget/BudgetRecommendations.css */
+.recommendations-container {
+  border-left: 4px solid #007bff;
+}
+
+.recommendation-list {
+  padding-left: 1.5rem;
+}
+
+.recommendation-item {
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.best-recommendation {
+  font-weight: bold;
+  color: #198754;
+}

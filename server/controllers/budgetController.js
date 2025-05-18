@@ -43,7 +43,9 @@ exports.saveBudget = async (data) => {
     // If dimensions are provided, calculate area and estimate
     if (dimensions.length && dimensions.width && dimensions.height) {
       const area = dimensions.length * dimensions.width;
-      const estimate = area * 1.5 * dimensions.height * 3; // 3 coats by default
+      // Use provided coats or default to 3
+      const coats = dimensions.coats || 3;
+      const estimate = area * 1.5 * dimensions.height * coats;
 
       const recommendations = getPaintRecommendations(max, estimate);
 
@@ -53,7 +55,7 @@ exports.saveBudget = async (data) => {
         dimensions,
         estimate,
         recommendations,
-        coats: 3,
+        coats,
         date: new Date()
       };
 
@@ -76,7 +78,7 @@ exports.saveBudget = async (data) => {
         budget.dimensions = dimensions;
         budget.estimate = estimate;
         budget.recommendations = recommendations;
-        budget.coats = 3;
+        budget.coats = coats;
 
         await budget.save();
       } else {
@@ -87,7 +89,7 @@ exports.saveBudget = async (data) => {
           dimensions,
           estimate,
           recommendations,
-          coats: 3,
+          coats,
           history: [newHistoryEntry],
         });
       }

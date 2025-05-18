@@ -1,5 +1,6 @@
 // client/src/components/budget/BudgetComparisonTable.jsx
 import React from "react";
+import "./BudgetComparisonTable.css";
 
 const paintOptions = [
   {
@@ -15,20 +16,29 @@ const paintOptions = [
     coverage: "350 sq ft/gallon",
   },
   {
-    type: "Luxery",
+    type: "Luxury",
     costPerSqFt: 3.0,
     durability: "5-7 years",
     coverage: "320 sq ft/gallon",
   },
 ];
 
-function BudgetComparisonTable({ budget }) {
+function BudgetComparisonTable({ budget, recommendations = [] }) {
+  // Determine the best recommendation (highest quality that fits the budget)
+  const getBestRecommendation = () => {
+    if (recommendations.includes("Luxury")) return "Luxury";
+    if (recommendations.includes("Premium")) return "Premium";
+    return "Standard";
+  };
+
+  const bestRecommendation = getBestRecommendation();
+
   return (
-    <div className="mt-4">
+    <div className="mt-4 comparison-table-container">
       <h5>Paint Options Within Your Budget</h5>
       <div className="table-responsive">
-        <table className="table table-dark table-bordered table-hover">
-          <thead>
+        <table className="table table-bordered table-hover">
+          <thead className="table-dark">
             <tr>
               <th>Type</th>
               <th>Cost per sq ft</th>
@@ -40,17 +50,28 @@ function BudgetComparisonTable({ budget }) {
           <tbody>
             {paintOptions
               .filter((opt) => opt.costPerSqFt * 100 <= budget.max) // crude check
-              .map((option, idx) => (
-                <tr key={idx}>
-                  <td>{option.type}</td>
-                  <td>{option.costPerSqFt.toFixed(2)} PKR</td>
-                  <td>{option.durability}</td>
-                  <td>{option.coverage}</td>
-                  <td>
-                    {Math.floor(budget.max / option.costPerSqFt)} sq ft
-                  </td>
-                </tr>
-              ))}
+              .map((option, idx) => {
+                const isRecommended = option.type === bestRecommendation;
+                return (
+                  <tr 
+                    key={idx} 
+                    className={isRecommended ? 'recommended-row' : ''}
+                  >
+                    <td>
+                      {option.type}
+                      {isRecommended && (
+                        <span className="ms-2 badge bg-success">Recommended</span>
+                      )}
+                    </td>
+                    <td>{option.costPerSqFt.toFixed(2)} PKR</td>
+                    <td>{option.durability}</td>
+                    <td>{option.coverage}</td>
+                    <td>
+                      {Math.floor(budget.max / option.costPerSqFt)} sq ft
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
