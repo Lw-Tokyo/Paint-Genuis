@@ -22,7 +22,7 @@ function BudgetInputForm({ onSubmit, initialMin = "", initialMax = "" }) {
       <form onSubmit={handleSubmit} className="budget-form shadow p-4 rounded">
         <h4 className="text-center mb-4">Set Your Budget</h4>
         <div className="mb-3">
-          <label className="form-label">Minimum Budget ($)</label>
+          <label className="form-label">Minimum Budget (PKR)</label>
           <input
             type="number"
             className="form-control"
@@ -35,7 +35,7 @@ function BudgetInputForm({ onSubmit, initialMin = "", initialMax = "" }) {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Maximum Budget ($)</label>
+          <label className="form-label">Maximum Budget (PKR)</label>
           <input
             type="number"
             className="form-control"

@@ -15,8 +15,8 @@ const paintOptions = [
     coverage: "350 sq ft/gallon",
   },
   {
-    type: "Eco-Friendly",
-    costPerSqFt: 2.0,
+    type: "Luxery",
+    costPerSqFt: 3.0,
     durability: "5-7 years",
     coverage: "320 sq ft/gallon",
   },
@@ -43,7 +43,7 @@ function BudgetComparisonTable({ budget }) {
               .map((option, idx) => (
                 <tr key={idx}>
                   <td>{option.type}</td>
-                  <td>${option.costPerSqFt.toFixed(2)}</td>
+                  <td>{option.costPerSqFt.toFixed(2)} PKR</td>
                   <td>{option.durability}</td>
                   <td>{option.coverage}</td>
                   <td>

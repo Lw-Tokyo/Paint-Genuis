@@ -5,25 +5,33 @@ const crypto = require('crypto');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   role: {
     type: String,
     enum: ['admin', 'contractor', 'painter', 'client'],
-    default: 'client'
+    default: 'client',
   },
   resetPasswordToken: String,
-  resetPasswordExpires: Date
-}, { timestamps: true });
+  resetPasswordExpires: Date,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: String,
+  verificationExpires: Date,
+
+}, 
+{ timestamps: true });
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {

@@ -18,6 +18,7 @@ import WallColorVisualizer from "./components/WallColorVisualizer";
 import WallMaskGenerator from "./components/WallMaskGenerator";
 import { UserProvider } from "./context/UserContext"; 
 import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
+import VerifyEmail from "./pages/VerifyEmail";
 
 // Dashboards
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
@@ -54,6 +55,7 @@ function AppContent() {
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/WallColorVisualizer" element={<WallColorVisualizer />} />
           <Route path="/WallMaskGenerator" element={<WallMaskGenerator />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
           

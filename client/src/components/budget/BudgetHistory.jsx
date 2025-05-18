@@ -27,14 +27,14 @@ const BudgetHistory = ({ history = [], onDelete }) => {
             </div>
           </div>
           <div className="entry-details">
-            <p>Min Budget: ${entry.min}</p>
-            <p>Max Budget: ${entry.max}</p>
+            <p>Min Budget: {entry.min} PKR</p>
+            <p>Max Budget: {entry.max} PKR</p>
             <p>Dimensions:
               {entry.dimensions?.length}m x {entry.dimensions?.width}m x {entry.dimensions?.height}m
             </p>
             <p>Area: {entry.dimensions?.area || 
               (entry.dimensions ? (entry.dimensions.length * entry.dimensions.width).toFixed(2) : "N/A")} sq.m</p>
-            <p>Estimate: ${entry.estimate}</p>
+            <p>Estimate: {entry.estimate} PKR</p>
             <p>Coats: {entry.coats}</p>
             <p>Recommendations: {entry.recommendations?.join(", ") || "None"}</p>
           </div>

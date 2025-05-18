@@ -1,15 +1,57 @@
-// src/services/AuthService.js
-import axios from 'axios';
+// Updated AuthService.js
 
-const API_URL = 'http://localhost:5000/api/auth'; // Adjust if needed
+import axios from "axios";
 
-const signup = (name, email, password, role) => 
-  axios.post(`${API_URL}/signup`, { name, email, password, role });
+const API_URL = "http://localhost:5000/api/auth"; // Adjust if needed
 
+// Helper function to set the token in axios headers
+const setAuthToken = (token) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+  }
+};
+
+// Signup
+const signup = async (name, email, password, role) => {
+  try {
+    const response = await axios.post(`${API_URL}/signup`, {
+      name,
+      email,
+      password,
+      role,
+    });
+    
+    // Return data with success flag
+    return {
+      data: response.data,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Signup error:", error);
+    
+    // If the server actually created the user but had issues with sending email
+    // We'll check if there's a specific error code or message that indicates this
+    if (error.response?.status === 201 || 
+        (error.response?.data && error.response?.data.message?.includes("verification email"))) {
+      return {
+        data: {
+          message: "Account created successfully. Please check your email for verification."
+        },
+        success: true
+      };
+    }
+    
+    throw error.response?.data || { error: "Signup failed" };
+  }
+};
+
+// Login
 const login = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
-    
+
     if (response.data.token && response.data.user) {
       const userData = {
         _id: response.data.user._id,
@@ -18,46 +60,83 @@ const login = async (email, password) => {
         role: response.data.user.role,
         token: response.data.token,
       };
-      
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      // Set the token in axios default headers for future requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      setAuthToken(response.data.token);
+
       return userData;
     }
-    
-    return response.data;
+
+    throw new Error("Invalid login response structure");
   } catch (error) {
     console.error("Login error:", error);
-    throw error;
+    throw error.response?.data || { error: "Login failed" };
   }
 };
- 
-const forgotPassword = (email) =>
-  axios.post(`${API_URL}/forgot-password`, { email });
 
-const resetPassword = (token, password) =>
-  axios.post(`${API_URL}/reset-password/${token}`, { password });
-
-const logout = () => {
-  localStorage.removeItem('user');
-  // Remove the token from axios headers
-  delete axios.defaults.headers.common['Authorization'];
+// Verify Email
+const verifyEmail = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/verify/${token}`);
+    return response.data;
+  } catch (error) {
+    console.error("Verification error:", error);
+    throw error.response?.data || { error: "Verification failed" };
+  }
 };
 
+// Check if User is Verified (new function)
+const checkVerificationStatus = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/check-verified/${token}`);
+    return response.data;
+  } catch (error) {
+    console.error("Check verification status error:", error);
+    throw error.response?.data || { error: "Failed to check verification status" };
+  }
+};
+
+// Forgot Password
+const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+    return response.data;
+  } catch (error) {
+    console.error("Forgot Password error:", error);
+    throw error.response?.data || { error: "Error sending reset link" };
+  }
+};
+
+// Reset Password
+const resetPassword = async (token, password) => {
+  try {
+    const response = await axios.post(`${API_URL}/reset-password/${token}`, {
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Reset Password error:", error);
+    throw error.response?.data || { error: "Error resetting password" };
+  }
+};
+
+// Logout
+const logout = () => {
+  localStorage.removeItem("user");
+  setAuthToken(null);
+};
+
+// Get Current User
 const getCurrentUser = () => {
   try {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     if (!userStr) return null;
-    
+
     const user = JSON.parse(userStr);
-    
-    // Set the token in axios default headers for future requests
     if (user && user.token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+      setAuthToken(user.token);
     }
-    
+
     return user;
   } catch (error) {
     console.error("Error getting current user:", error);
@@ -72,6 +151,8 @@ const AuthService = {
   forgotPassword,
   resetPassword,
   getCurrentUser,
+  verifyEmail,
+  checkVerificationStatus,
 };
 
 export default AuthService;

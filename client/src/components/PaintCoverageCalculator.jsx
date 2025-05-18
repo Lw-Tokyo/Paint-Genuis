@@ -43,7 +43,7 @@ const PaintCoverageCalculator = () => {
 
   return (
     <div className="paint-coverage-calculator">
-      <h2 className="calculator-title">Paint Genius Calculator</h2>
+      <h2 className="calculator-title">Paint Coverage Calculator</h2>
       
       <div className="input-toggle">
         <button 

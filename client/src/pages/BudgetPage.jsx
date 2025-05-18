@@ -157,8 +157,8 @@ function BudgetPage() {
           <div className="row">
             <div className="col-md-6">
               <h5>Current Budget</h5>
-              <p>Minimum: ${budget.min}</p>
-              <p>Maximum: ${budget.max}</p>
+              <p>Minimum: {budget.min} PKR</p>
+              <p>Maximum: {budget.max} PKR</p>
             </div>
             {roomDimensions && (
               <div className="col-md-6">

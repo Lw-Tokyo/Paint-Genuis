@@ -63,7 +63,7 @@ function CostEstimatorPage() {
 
   useEffect(() => {
     if (showSuccess) {
-      const timer = setTimeout(() => setShowSuccess(false), 5000);
+      const timer = setTimeout(() => setShowSuccess(false), 20000);
       return () => clearTimeout(timer);
     }
   }, [showSuccess]);
@@ -147,7 +147,7 @@ function CostEstimatorPage() {
       {estimate !== null && showSuccess && (
         <div className="result-container">
           <div className="estimate-result">
-            Your estimated painting cost is <span className="highlight">${estimate}</span> 
+            Your estimated painting cost is <span className="highlight">PKR{estimate}</span> 
           </div>
         </div>
       )}

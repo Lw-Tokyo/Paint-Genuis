@@ -1,86 +1,129 @@
-// src/pages/AuthPage.jsx
+// Updated AuthPage.jsx with ESLint fix
 
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./AuthPage.css";
 import AuthService from "../services/AuthService";
 import { UserContext } from "../context/UserContext";
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'contractor' });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "contractor" });
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const { setUser } = useContext(UserContext);
+
+  // Check if there's any stored email and password from a recent signup
+  useEffect(() => {
+    const lastEmail = sessionStorage.getItem('lastSignupEmail');
+    const lastPassword = sessionStorage.getItem('lastSignupPassword');
+    
+    if (lastEmail && isLogin) {
+      setFormData(prev => ({
+        ...prev,
+        email: lastEmail,
+        password: lastPassword || ''
+      }));
+      
+      // Clear the stored credentials after using them
+      sessionStorage.removeItem('lastSignupEmail');
+      sessionStorage.removeItem('lastSignupPassword');
+    }
+    
+    // Check URL params for any messages
+    const params = new URLSearchParams(location.search);
+    const successMsg = params.get('signupSuccess');
+    if (successMsg) {
+      setMessage(decodeURIComponent(successMsg));
+      setIsLogin(true);
+    }
+  }, [isLogin, location]);
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    setError('');
-    setFormData({ name: '', email: '', password: '', role: 'contractor' });
+    setError("");
+    setMessage("");
+    setFormData({ name: "", email: "", password: "", role: "contractor" });
   };
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setMessage("");
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
     try {
       if (isLogin) {
         const user = await AuthService.login(formData.email, formData.password);
-        
-        // Make sure we got a valid user object with role
         if (user && user.role) {
           setUser(user);
-          
-          // Navigate based on role
-          const dashboardPath = `/${user.role}/dashboard`;
-          navigate(dashboardPath);
-        } else {
-          setError("Invalid user data received from server");
+          navigate(`/${user.role}/dashboard`);
         }
       } else {
+        if (!nameRegex.test(formData.name)) {
+          setError("Name can only contain letters and spaces.");
+          return;
+        }
+
+        if (!passwordRegex.test(formData.password)) {
+          setError("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.");
+          return;
+        }
+
+        // Call signup but don't assign to unused variable
         await AuthService.signup(formData.name, formData.email, formData.password, formData.role);
-        setIsLogin(true); // switch to login after signup
+        
+        // Store email and password in sessionStorage for auto-fill in login
+        sessionStorage.setItem('lastSignupEmail', formData.email);
+        sessionStorage.setItem('lastSignupPassword', formData.password);
+        
+        // Redirect to login with success message
+        const successMsg = encodeURIComponent("User created successfully. Please check your email to verify your account.");
+        navigate(`/auth?signupSuccess=${successMsg}`);
       }
     } catch (err) {
-      console.error("Auth error:", err); // For debugging
-      setError(err.response?.data?.error || 'Something went wrong');
+      setError(err.response?.data?.error || "Something went wrong");
     }
   };
 
   return (
     <div className="auth-wrapper">
-      <div
-        className="auth-card"
-        style={{ width: "100%", maxWidth: "500px" }}
-      >
+      <div className="auth-card">
         <h3 className="text-center mb-4">{isLogin ? "Login" : "Sign Up"}</h3>
+
+        {message && <div className="alert alert-success">{message}</div>}
         {error && <div className="alert alert-danger">{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="mb-3">
-              <label className="form-label">Name</label>
-              <input name="name" type="text" className="form-control" value={formData.name} onChange={handleChange} required />
+              <label>Name</label>
+              <input type="text" name="name" value={formData.name} onChange={handleChange} required className="form-control" />
             </div>
           )}
 
           <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input name="email" type="email" className="form-control" value={formData.email} onChange={handleChange} required />
+            <label>Email</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} required className="form-control" />
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input name="password" type="password" className="form-control" value={formData.password} onChange={handleChange} required />
+            <label>Password</label>
+            <input type="password" name="password" value={formData.password} onChange={handleChange} required className="form-control" />
           </div>
 
-          {/* Only show role selection during Sign Up */}
           {!isLogin && (
             <div className="mb-3">
-              <label className="form-label">Role</label>
-              <select name="role" className="form-select" value={formData.role} onChange={handleChange} required>
+              <label>Role</label>
+              <select name="role" value={formData.role} onChange={handleChange} required className="form-select">
                 <option value="contractor">Contractor</option>
                 <option value="painter">Painter</option>
                 <option value="client">Client</option>
@@ -88,10 +131,9 @@ function AuthPage() {
             </div>
           )}
 
-          {/* Forgot Password link only in login mode */}
           {isLogin && (
             <div className="mb-3 text-end">
-              <span className="text-info" style={{ cursor: "pointer" }} onClick={() => navigate("/forgot-password")}>
+              <span className="text-info" onClick={() => navigate("/forgot-password")} style={{ cursor: "pointer" }}>
                 Forgot Password?
               </span>
             </div>
@@ -101,20 +143,14 @@ function AuthPage() {
             {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
-        
-        <p className="text-center mt-3">
+
+        <div className="text-center mt-3">
           {isLogin ? (
-            <>
-              Don't have an account?{" "}
-              <span onClick={toggleMode} className="text-info" style={{ cursor: "pointer" }}>Sign Up</span>
-            </>
+            <span onClick={toggleMode} className="text-info" style={{ cursor: "pointer" }}>Sign Up</span>
           ) : (
-            <>
-              Already have an account?{" "}
-              <span onClick={toggleMode} className="text-info" style={{ cursor: "pointer" }}>Login</span>
-            </>
+            <span onClick={toggleMode} className="text-info" style={{ cursor: "pointer" }}>Login</span>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );
