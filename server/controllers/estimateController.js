@@ -1,22 +1,22 @@
-// controllers/estimateController.js
 exports.calculateEstimate = (req, res) => {
   try {
-    const { length, width, height, paintType } = req.body;
+    const { length, width, height, paintType, coats } = req.body;
 
-    if (!length || !width || !height) {
-      return res.status(400).json({ error: "Length, width, and height are required" });
+    if (!length || !width || !height || !coats) {
+      return res.status(400).json({ error: "Length, width, height, and number of coats are required" });
     }
 
     const numericLength = parseFloat(length);
     const numericWidth = parseFloat(width);
     const numericHeight = parseFloat(height);
+    const numericCoats = parseInt(coats);
 
-    if (isNaN(numericLength) || isNaN(numericWidth) || isNaN(numericHeight)) {
-      return res.status(400).json({ error: "All dimensions must be valid numbers" });
+    if (isNaN(numericLength) || isNaN(numericWidth) || isNaN(numericHeight) || isNaN(numericCoats)) {
+      return res.status(400).json({ error: "All inputs must be valid numbers" });
     }
 
     const area = 2 * (numericLength * numericHeight + numericWidth * numericHeight) + (numericLength * numericWidth);
-    
+
     let costPerSqFt;
     switch (paintType) {
       case "premium":
@@ -29,7 +29,7 @@ exports.calculateEstimate = (req, res) => {
         costPerSqFt = 1.5;
     }
 
-    const totalCost = area * costPerSqFt;
+    const totalCost = area * costPerSqFt * numericCoats;
 
     res.json({ totalCost });
   } catch (err) {

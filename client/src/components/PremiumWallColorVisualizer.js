@@ -37,10 +37,10 @@ const paintColors = {
 
 // Room data
 const roomData = [
-  { id: 'room1', name: 'Room 1', image: 'room_without_wall1.png' },
-  { id: 'room2', name: 'Room 2', image: 'room_without_wall2.png' },
-  { id: 'room3', name: 'Room 3', image: 'room_without_wall3.png' },
-  { id: 'room4', name: 'Room 4', image: 'room_without_wall4.png' }
+  { id: 'room1', name: 'Living Room', image: 'livingroom.png' },
+  { id: 'room2', name: 'Living Room 2', image: 'livingroom2.png' },
+  { id: 'room3', name: 'Kitchen', image: 'kitchen.png' },
+  { id: 'room4', name: 'Bed Room', image: 'bedroom.png' }
 ];
 
 function PremiumWallColorVisualizer() {

@@ -1,9 +1,19 @@
+.auth-back {
+  width: 100%;
+  height: 100vh;
+  background-image: url("../assets/paint-drops-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .auth-wrapper {
   min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(255, 255, 255); /* Dark background */
+  background-color: rgb(255, 255, 255 0);
   padding: 2rem;
 }
 

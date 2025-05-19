@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { UserContext } from "./context/UserContext";
@@ -15,7 +15,6 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CostEstimatorPage from "./pages/CostEstimatorPage";
 import BudgetPage from "./pages/BudgetPage";
 import WallColorVisualizer from "./components/WallColorVisualizer";
-import WallMaskGenerator from "./components/WallMaskGenerator";
 import { UserProvider } from "./context/UserContext"; 
 import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -33,17 +32,34 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 function AppContent() {
   const { user } = useContext(UserContext);
-  const isDashboardPage = window.location.pathname.includes('/dashboard');
-  
-  // Apply container class only for non-dashboard pages
+  const location = useLocation();
+
+  const backgroundImages = {
+    "/": "url('/home-bg.jpg')",
+    "/estimate": "url('/4.jpg')",
+    "/coverage-calculator": "url('/4.jpg')",
+    "/WallColorVisualizer": "url('/4.jpg')",
+    "/budget": "url('/5.jpg')",
+    "/forgot-password": "url('/3.jpg')",
+    "/reset-password/:token": "3.jpg')",
+    "/about": "url('/1.jpg')",
+    "/contact": "url('/5.jpg')",
+    "/auth": "url('/3.JPG')"
+  };
+
+  const backgroundImage = backgroundImages[location.pathname] || "none";
+
+  const isDashboardPage = location.pathname.includes('/dashboard');
+  const noFooterPaths = ["/auth", "/forgot-password","/about", "/reset-password", "/verify-email"]; 
+  const showFooter = !noFooterPaths.some(path => location.pathname.startsWith(path));
+
   const mainClassName = isDashboardPage && user ? "" : "container py-4";
 
   return (
-    <Router>
+    <div style={{ backgroundImage, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh' }}>
       <Navbar />
       <main className={mainClassName}>
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/estimate" element={<CostEstimatorPage />} />
           <Route path="/budget" element={<BudgetPage />} />
@@ -54,7 +70,6 @@ function AppContent() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/WallColorVisualizer" element={<WallColorVisualizer />} />
-          <Route path="/WallMaskGenerator" element={<WallMaskGenerator />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
@@ -64,32 +79,34 @@ function AppContent() {
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/messages" element={<MessagesPage />} />
           </Route>
-          
+
           {/* Contractor Routes */}
           <Route element={<ProtectedRoute allowedRoles={["contractor"]} />}>
             <Route path="/contractor/dashboard" element={<ContractorDashboard />} />
           </Route>
-          
+
           {/* Painter Routes */}
           <Route element={<ProtectedRoute allowedRoles={["painter"]} />}>
             <Route path="/painter/dashboard" element={<PainterDashboard />} />
           </Route>
-          
+
           {/* Client Routes */}
           <Route element={<ProtectedRoute allowedRoles={["client"]} />}>
             <Route path="/client/dashboard" element={<ClientDashboard />} />
           </Route>
         </Routes>
       </main>
-      <Footer />
-    </Router>
+      {showFooter && <Footer />}
+    </div>
   );
 }
 
 function App() {
   return (
     <UserProvider>
-      <AppContent />
+      <Router>
+        <AppContent />
+      </Router>
     </UserProvider>
   );
 }

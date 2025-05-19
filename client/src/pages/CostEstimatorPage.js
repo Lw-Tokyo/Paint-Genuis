@@ -10,6 +10,7 @@ function CostEstimatorPage() {
     width: '',
     height: '',
     paintType: 'standard',
+    coats: 3, // Default value
   });
 
   const [estimate, setEstimate] = useState(null);
@@ -25,41 +26,37 @@ function CostEstimatorPage() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setShowSkeleton(true);
-  setEstimate(null);
-  setError('');
+    e.preventDefault();
+    setLoading(true);
+    setShowSkeleton(true);
+    setEstimate(null);
+    setError('');
 
-  try {
-    const payload = {
-      length: formData.length,
-      width: formData.width,
-      height: formData.height,
-      paintType: formData.paintType,
-    };
+    try {
+      const payload = {
+        length: formData.length,
+        width: formData.width,
+        height: formData.height,
+        paintType: formData.paintType,
+        coats: formData.coats,
+      };
 
-    const response = await axios.post('http://localhost:5000/api/estimate', payload);
-    setTimeout(() => {
-      setEstimate(response.data.totalCost);
-      setShowSuccess(true);
+      const response = await axios.post('http://localhost:5000/api/estimate', payload);
+      
+      setTimeout(() => {
+        setEstimate(response.data.totalCost);
+        setShowSuccess(true);
+        setShowSkeleton(false);
+        setLoading(false);
+      }, 1500);
+
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Failed to calculate estimate. Please check your inputs or try again later.');
       setShowSkeleton(false);
-      setFormData({
-        length: '',
-        width: '',
-        height: '',
-        paintType: 'standard',
-      });
-    }, 1500);
-  } catch (err) {
-    console.error('Error:', err);
-    setError('Failed to calculate estimate. Please check your inputs or try again later.');
-    setShowSkeleton(false);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (showSuccess) {
@@ -130,12 +127,25 @@ function CostEstimatorPage() {
           </select>
         </div>
 
+        <div className="form-group">
+          <label htmlFor="coats" className="form-label">Number of Coats</label>
+          <input
+            type="number"
+            min="1"
+            className="form-input"
+            id="coats"
+            name="coats"
+            value={formData.coats}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
         <button type="submit" className="estimate-btn" disabled={loading}>
           {loading ? "Calculating..." : "Calculate Estimate"}
         </button>
       </form>
 
-      {/* Skeleton Loader */}
       {showSkeleton && (
         <div className="skeleton-container">
           <Skeleton height={50} count={1} className="skeleton mb-2" />
@@ -143,16 +153,14 @@ function CostEstimatorPage() {
         </div>
       )}
 
-      {/* Success Message */}
       {estimate !== null && showSuccess && (
         <div className="result-container">
           <div className="estimate-result">
-            Your estimated painting cost is <span className="highlight">{estimate} PKR</span> 
+            Your estimated painting cost is <span className="highlight">{estimate} PKR</span>
           </div>
         </div>
       )}
 
-      {/* Error Message */}
       {error && (
         <div className="result-container">
           <div className="estimate-result error-message">
@@ -160,10 +168,6 @@ function CostEstimatorPage() {
           </div>
         </div>
       )}
-
-      <p className="about-text fade-in delay-2" style={{marginTop: "40px", textAlign: "center"}}>
-        Get <span className="highlight">accurate</span>, <span className="highlight">reliable</span>, and <span className="highlight">instant</span> estimates for your paints!
-      </p>
     </div>
   );
 }
