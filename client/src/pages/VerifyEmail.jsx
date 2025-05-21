@@ -1,51 +1,57 @@
-// Updated VerifyEmail.jsx
+// client/src/pages/VerifyEmail.jsx
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 import './AuthPage.css';
 
 function VerifyEmail() {
   const { token } = useParams();
   const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        // Add a slight delay to ensure the "verifying" state is visible
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // First check if the user is already verified
+        const checkStatus = await AuthService.checkVerificationStatus(token);
         
-        const response = await axios.get(`http://localhost:5000/api/auth/verify/${token}`);
-        setStatus('success');
-        setMessage(response.data.message);
-      } catch (error) {
-        console.error("Verification error:", error);
-        
-        // If there's an error but we can determine the user is actually verified
-        // (by trying to get the user status)
-        try {
-          // This is an optional endpoint you might want to add that checks if 
-          // the user associated with this token is already verified
-          const checkStatus = await axios.get(`http://localhost:5000/api/auth/check-verified/${token}`);
-          if (checkStatus.data.isVerified) {
-            setStatus('success');
-            setMessage('Your email has been successfully verified. You can now log in.');
-            return;
-          }
-        } catch (secondError) {
-          // Ignore secondary error, proceed with original error
+        if (checkStatus.isVerified) {
+          setStatus('success');
+          setMessage('Your email has already been verified. You can now log in.');
+          
+          // Auto redirect to login after 3 seconds
+          setTimeout(() => {
+            navigate('/auth');
+          }, 3000);
+          
+          return;
         }
         
+        // If not verified, try to verify
+        const response = await AuthService.verifyEmail(token);
+        setStatus('success');
+        setMessage(response.message);
+        
+        // Auto redirect to login after 3 seconds
+        setTimeout(() => {
+          navigate('/auth');
+        }, 1000);
+        
+      } catch (error) {
         setStatus('error');
         setMessage(error.response?.data?.error || 'Verification failed');
       }
     };
 
     if (token) {
-      verifyEmail();
+      // Add a slight delay to ensure the "verifying" state is visible
+      setTimeout(() => {
+        verifyEmail();
+      }, 1500);
     }
-  }, [token]);
+  }, [token, navigate]);
 
   return (
     <div className="auth-wrapper">
@@ -53,20 +59,28 @@ function VerifyEmail() {
         <h3 className="text-center mb-4">Email Verification</h3>
 
         {status === 'verifying' && (
-          <div className="alert alert-info">Verifying your email...</div>
+          <div className="alert alert-info">
+            <div className="d-flex align-items-center">
+              <span className="me-2">Verifying your email...</span>
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
         )}
-        
+
         {status === 'success' && (
           <>
             <div className="alert alert-success">{message}</div>
             <div className="text-center mt-4">
+              <p>Redirecting to login page in a few seconds...</p>
               <Link to="/auth" className="btn btn-primary">
-                Go to Login
+                Go to Login Now
               </Link>
             </div>
           </>
         )}
-        
+
         {status === 'error' && (
           <>
             <div className="alert alert-danger">{message}</div>

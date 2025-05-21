@@ -112,7 +112,7 @@ function PremiumWallColorVisualizer() {
   return (
     <div className="premium-visualizer-container">
       <div className="premium-visualizer-header">
-        <h1 className="premium-visualizer-title">Premium Wall Color Visualizer</h1>
+        <h1 className="premium-visualizer-title">Visualizer Gallery</h1>
         <p className="premium-visualizer-subtitle">
           Transform your space with our <span className="highlight">professional-grade</span> color visualization tool
         </p>

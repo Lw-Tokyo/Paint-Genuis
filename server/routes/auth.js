@@ -1,10 +1,38 @@
-//  server/routes/auth.js 
+// server/routes/auth.js 
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
+
+const validateEmail = (email) => {
+  // Basic email format validation
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  
+  if (!emailRegex.test(email)) {
+    return { isValid: false, error: 'Please enter a valid email address.' };
+  }
+  
+  // Additional checks for repeated TLDs and other issues
+  const domain = email.split('@')[1];
+  const domainParts = domain.split('.');
+  const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
+  
+  // Check for patterns like domain.com.com
+  for (let tld of tlds) {
+    if (domain.includes(`.${tld}.${tld}`)) {
+      return { isValid: false, error: 'Please enter a valid email address.' };
+    }
+  }
+
+  // Check for unreasonably long TLDs (likely mistakes)
+  if (domainParts[domainParts.length - 1].length > 10) {
+    return { isValid: false, error: 'Invalid email domain format.' };
+  }
+  
+  return { isValid: true };
+};
 
 // Generate JWT Token
 const generateToken = (user) => {
@@ -36,11 +64,17 @@ router.post('/signup', async (req, res) => {
   const allowedRoles = ['contractor', 'painter', 'client'];
 
   if (!allowedRoles.includes(role)) {
-    return res.status(400).json({ error: 'Invalid role selected' });
+    return res.status(400).json({ error: 'Please Select role' });
   }
 
   const nameRegex = /^[A-Za-z\s]+$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  
+  // Use the new email validation function
+  const emailValidation = validateEmail(email);
+  if (!emailValidation.isValid) {
+    return res.status(400).json({ error: emailValidation.error });
+  }
 
   if (!nameRegex.test(name)) {
     return res.status(400).json({ error: 'Name can only contain letters and spaces.' });
@@ -111,6 +145,30 @@ router.post('/signup', async (req, res) => {
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  
+  // Validate email format
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+  
+  // Additional check for repeated TLDs
+  const domain = email.split('@')[1];
+  const domainParts = domain.split('.');
+  const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
+  
+  // Check for patterns like domain.com.com
+  for (let tld of tlds) {
+    if (domain.includes(`.${tld}.${tld}`)) {
+      return res.status(400).json({ error: 'Invalid email domain format.' });
+    }
+  }
+  
+  // Check for unreasonably long TLDs (likely mistakes)
+  if (domainParts[domainParts.length - 1].length > 10) {
+    return res.status(400).json({ error: 'Invalid email domain format.' });
+  }
 
   try {
     const user = await User.findOne({ email });
@@ -152,63 +210,6 @@ router.get('/verify/:token', async (req, res) => {
   const { token } = req.params;
 
   try {
-    const user = await User.findOne({
-      verificationToken: token,
-      verificationExpires: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid or expired verification token' });
-    }
-
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationExpires = undefined;
-    await user.save();
-
-    res.status(200).json({ message: 'Email successfully verified. You can now log in.' });
-
-  } catch (err) {
-    console.error("Verification Error:", err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Add this to server/routes/auth.js
-
-// GET /api/auth/check-verified/:token
-router.get('/check-verified/:token', async (req, res) => {
-  const { token } = req.params;
-
-  try {
-    // Find the user associated with this token, regardless of expiry
-    const user = await User.findOne({
-      verificationToken: token,
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found with this token' });
-    }
-
-    // Return whether the user is already verified
-    return res.status(200).json({ 
-      isVerified: user.isVerified,
-      message: user.isVerified ? 
-        'Email already verified. You can log in.' : 
-        'Email not yet verified.'
-    });
-
-  } catch (err) {
-    console.error("Check Verification Status Error:", err);
-    return res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Modify the existing verify route to handle already verified users
-router.get('/verify/:token', async (req, res) => {
-  const { token } = req.params;
-
-  try {
     // First check if user exists with this token, regardless of expiry
     const user = await User.findOne({
       verificationToken: token,
@@ -242,9 +243,61 @@ router.get('/verify/:token', async (req, res) => {
   }
 });
 
+// GET /api/auth/check-verified/:token
+router.get('/check-verified/:token', async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    // Find the user associated with this token, regardless of expiry
+    const user = await User.findOne({
+      verificationToken: token,
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found with this token' });
+    }
+
+    // Return whether the user is already verified
+    return res.status(200).json({ 
+      isVerified: user.isVerified,
+      message: user.isVerified ? 
+        'Email already verified. You can log in.' : 
+        'Email not yet verified.'
+    });
+
+  } catch (err) {
+    console.error("Check Verification Status Error:", err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // POST /api/auth/resend-verification
 router.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
+  
+  // Validate email format
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+  
+  // Additional check for repeated TLDs
+  const domain = email.split('@')[1];
+  const domainParts = domain.split('.');
+  const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
+  
+  // Check for patterns like domain.com.com
+  for (let tld of tlds) {
+    if (domain.includes(`.${tld}.${tld}`)) {
+      return res.status(400).json({ error: 'Invalid email domain format.' });
+    }
+  }
+  
+  // Check for unreasonably long TLDs (likely mistakes)
+  if (domainParts[domainParts.length - 1].length > 10) {
+    return res.status(400).json({ error: 'Invalid email domain format.' });
+  }
 
   try {
     const user = await User.findOne({ email });
@@ -300,6 +353,30 @@ router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
   console.log("Forgot Password Request Received for Email:", email);
+  
+  // Validate email format
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
+  
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+  
+  // Additional check for repeated TLDs
+  const domain = email.split('@')[1];
+  const domainParts = domain.split('.');
+  const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
+  
+  // Check for patterns like domain.com.com
+  for (let tld of tlds) {
+    if (domain.includes(`.${tld}.${tld}`)) {
+      return res.status(400).json({ error: 'Invalid email domain format.' });
+    }
+  }
+  
+  // Check for unreasonably long TLDs (likely mistakes)
+  if (domainParts[domainParts.length - 1].length > 10) {
+    return res.status(400).json({ error: 'Invalid email domain format.' });
+  }
 
   try {
     const user = await User.findOne({ email });

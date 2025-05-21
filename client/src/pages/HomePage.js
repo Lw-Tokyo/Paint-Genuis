@@ -7,8 +7,8 @@ function HomePage() {
   const features = [
     {
       id: "visualizer",
-      title: "Wall Color Visualizer",
-      description: "Experience colors in your space before committing. Our AI-powered visualizer transforms your rooms with thousands of premium colors.",
+      title: "Visualizer Gallery",
+      description: "See how colors transform your space before you paint. Our interactive visualizer lets you explore a wide range of paint types and finishes applied to real-life room settings.",
       icon: "palette",
       path: "/WallColorVisualizer",
       ctaText: "Try Visualizer",
@@ -181,23 +181,23 @@ function HomePage() {
         <div className="showcase-container">
           <div className="showcase-content">
             <span className="section-badge">FEATURED TOOL</span>
-            <h2>AI-Powered Wall Color Visualizer</h2>
+            <h2>Visualizer Gallery</h2>
             <p>
-              Upload photos of your rooms or use our gallery of spaces to instantly visualize how thousands 
-              of premium colors will transform your walls.
+              See how colors transform your space before you paint. Our interactive visualizer lets you explore a wide 
+              range of paint types and finishes applied to real-life room settings.
             </p>
             <ul className="showcase-features">
               <li>
                 <i className="icon-check"></i>
-                <span>AI color rendering with realistic lighting effects</span>
+                <span>Preview colors and finishes on living rooms, bedrooms, kitchens, and more</span>
               </li>
               <li>
                 <i className="icon-check"></i>
-                <span>Adjust time-of-day lighting conditions</span>
+                <span>Compare Standard, Premium, and Luxury paint types side by side</span>
               </li>
               <li>
                 <i className="icon-check"></i>
-                <span>Save and compare multiple color schemes</span>
+                <span>Make confident design choices with realistic visual simulations</span>
               </li>
               <li>
                 <i className="icon-check"></i>

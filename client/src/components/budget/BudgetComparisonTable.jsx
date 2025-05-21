@@ -35,7 +35,7 @@ function BudgetComparisonTable({ budget, recommendations = [] }) {
 
   return (
     <div className="mt-4 comparison-table-container">
-      <h5>Paint Options Within Your Budget</h5>
+      <h5>Comparison Table and Paint Options Within Your Budget</h5>
       <div className="table-responsive">
         <table className="table table-bordered table-hover">
           <thead className="table-dark">

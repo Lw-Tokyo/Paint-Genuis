@@ -1,4 +1,4 @@
-// Updated AuthService.js
+//  client/src/services/AuthService.js
 
 import axios from "axios";
 
@@ -43,7 +43,8 @@ const signup = async (name, email, password, role) => {
       };
     }
     
-    throw error.response?.data || { error: "Signup failed" };
+    // We're throwing the entire error object to get more context
+    throw error;
   }
 };
 
@@ -70,7 +71,7 @@ const login = async (email, password) => {
     throw new Error("Invalid login response structure");
   } catch (error) {
     console.error("Login error:", error);
-    throw error.response?.data || { error: "Login failed" };
+    throw error;
   }
 };
 
@@ -81,18 +82,18 @@ const verifyEmail = async (token) => {
     return response.data;
   } catch (error) {
     console.error("Verification error:", error);
-    throw error.response?.data || { error: "Verification failed" };
+    throw error;
   }
 };
 
-// Check if User is Verified (new function)
+// Check if User is Verified
 const checkVerificationStatus = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/check-verified/${token}`);
     return response.data;
   } catch (error) {
     console.error("Check verification status error:", error);
-    throw error.response?.data || { error: "Failed to check verification status" };
+    throw error;
   }
 };
 
@@ -103,7 +104,7 @@ const forgotPassword = async (email) => {
     return response.data;
   } catch (error) {
     console.error("Forgot Password error:", error);
-    throw error.response?.data || { error: "Error sending reset link" };
+    throw error;
   }
 };
 
@@ -116,7 +117,7 @@ const resetPassword = async (token, password) => {
     return response.data;
   } catch (error) {
     console.error("Reset Password error:", error);
-    throw error.response?.data || { error: "Error resetting password" };
+    throw error;
   }
 };
 

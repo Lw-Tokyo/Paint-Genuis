@@ -1,4 +1,4 @@
-// Updated AuthPage.jsx with ESLint fix
+// client/src/pages/AuthPages.jsx
 
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -11,6 +11,7 @@ function AuthPage() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "contractor" });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { setUser } = useContext(UserContext);
@@ -56,9 +57,11 @@ function AuthPage() {
     e.preventDefault();
     setError("");
     setMessage("");
+    setIsLoading(true);
 
     const nameRegex = /^[A-Za-z\s]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     try {
       if (isLogin) {
@@ -68,29 +71,42 @@ function AuthPage() {
           navigate(`/${user.role}/dashboard`);
         }
       } else {
+        // Validate inputs before submitting
         if (!nameRegex.test(formData.name)) {
           setError("Name can only contain letters and spaces.");
+          setIsLoading(false);
+          return;
+        }
+        
+        if (!emailRegex.test(formData.email)) {
+          setError("Please enter a valid email address.");
+          setIsLoading(false);
           return;
         }
 
         if (!passwordRegex.test(formData.password)) {
           setError("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.");
+          setIsLoading(false);
           return;
         }
 
-        // Call signup but don't assign to unused variable
-        await AuthService.signup(formData.name, formData.email, formData.password, formData.role);
+        // Call signup
+        const result = await AuthService.signup(formData.name, formData.email, formData.password, formData.role);
         
-        // Store email and password in sessionStorage for auto-fill in login
-        sessionStorage.setItem('lastSignupEmail', formData.email);
-        sessionStorage.setItem('lastSignupPassword', formData.password);
-        
-        // Redirect to login with success message
-        const successMsg = encodeURIComponent("User created successfully. Please check your email to verify your account.");
-        navigate(`/auth?signupSuccess=${successMsg}`);
+        if (result.success) {
+          // Store email and password in sessionStorage for auto-fill in login
+          sessionStorage.setItem('lastSignupEmail', formData.email);
+          sessionStorage.setItem('lastSignupPassword', formData.password);
+          
+          // Redirect to login with success message
+          const successMsg = encodeURIComponent("User created successfully. Please check your email to verify your account.");
+          navigate(`/auth?signupSuccess=${successMsg}`);
+        }
       }
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,8 +155,16 @@ function AuthPage() {
             </div>
           )}
 
-          <button type="submit" className={`btn ${isLogin ? "btn-primary" : "btn-success"} w-100`}>
-            {isLogin ? "Login" : "Sign Up"}
+          <button 
+            type="submit" 
+            className={`btn ${isLogin ? "btn-primary" : "btn-success"} w-100`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              "Processing..."
+            ) : (
+              isLogin ? "Login" : "Sign Up"
+            )}
           </button>
         </form>
 
