@@ -1,7 +1,6 @@
 // server/controllers/budgetController.js
 const Budget = require("../models/Budget");
 
-// Helper function to determine paint recommendations based on budget
 const getPaintRecommendations = (budgetMax, estimate) => {
   const recommendations = [];
   if (estimate <= budgetMax) recommendations.push("Standard");
@@ -10,7 +9,6 @@ const getPaintRecommendations = (budgetMax, estimate) => {
   return recommendations;
 };
 
-// Save or update budget and dimensions
 exports.saveBudget = async (data) => {
   const { userId, min, max, dimensions } = data;
 
@@ -21,29 +19,25 @@ exports.saveBudget = async (data) => {
   try {
     let budget = await Budget.findOne({ userId });
     
-    // Handle initial budget setting (no dimensions yet)
     if (!dimensions) {
       if (budget) {
-        // Update existing budget without dimensions
         budget.min = min;
         budget.max = max;
         await budget.save();
       } else {
-        // Create new budget without dimensions
+  
         budget = await Budget.create({
           userId,
           min,
           max,
-          history: [] // Initialize with empty history
+          history: [] 
         });
       }
       return budget;
     }
 
-    // If dimensions are provided, calculate area and estimate
     if (dimensions.length && dimensions.width && dimensions.height) {
       const area = dimensions.length * dimensions.width;
-      // Use provided coats or default to 3
       const coats = dimensions.coats || 3;
       const estimate = area * 1.5 * dimensions.height * coats;
 
@@ -60,7 +54,6 @@ exports.saveBudget = async (data) => {
       };
 
       if (budget) {
-        // Only add to history if we already have estimates
         if (budget.estimate) {
           budget.history.push({
             min: budget.min,

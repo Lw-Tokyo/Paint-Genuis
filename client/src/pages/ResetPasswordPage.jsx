@@ -1,4 +1,4 @@
-// src/pages/ResetPassword.jsx
+
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import AuthService from '../services/AuthService';
@@ -19,7 +19,6 @@ function ResetPassword() {
     setMessage('');
     setError('');
 
-    // Validate password
     const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(password)) {
       setError('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.');
@@ -27,7 +26,7 @@ function ResetPassword() {
       return;
     }
 
-    // Check if passwords match
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setIsSubmitting(false);
@@ -38,10 +37,9 @@ function ResetPassword() {
       const response = await AuthService.resetPassword(token, password);
       setMessage(response.message);
       
-      // Redirect to login after 3 seconds
       setTimeout(() => {
         navigate('/auth');
-      }, 3000);
+      }, 1500);
     } catch (err) {
       setError(err.error || 'An error occurred');
     } finally {

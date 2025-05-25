@@ -1,4 +1,4 @@
-// src/App.js
+
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -8,8 +8,6 @@ import { UserContext } from "./context/UserContext";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CostEstimatorPage from "./pages/CostEstimatorPage";
@@ -19,15 +17,14 @@ import { UserProvider } from "./context/UserContext";
 import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
 import VerifyEmail from "./pages/VerifyEmail";
 
-// Dashboards
+
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
 import MessagesPage from "./pages/admin/MessagesPage";
 import ContractorDashboard from "./pages/contractor/ContractorDashboard";
-import PainterDashboard from "./pages/painter/PainterDashboard";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import AuthPage from "./pages/AuthPage";
 
-// Routes
+
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 function AppContent() {
@@ -65,8 +62,6 @@ function AppContent() {
           <Route path="/budget" element={<BudgetPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/WallColorVisualizer" element={<WallColorVisualizer />} />
@@ -74,23 +69,18 @@ function AppContent() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
           
-          {/* Admin Routes */}
+          {}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/messages" element={<MessagesPage />} />
           </Route>
 
-          {/* Contractor Routes */}
+          {}
           <Route element={<ProtectedRoute allowedRoles={["contractor"]} />}>
             <Route path="/contractor/dashboard" element={<ContractorDashboard />} />
           </Route>
 
-          {/* Painter Routes */}
-          <Route element={<ProtectedRoute allowedRoles={["painter"]} />}>
-            <Route path="/painter/dashboard" element={<PainterDashboard />} />
-          </Route>
-
-          {/* Client Routes */}
+          {}
           <Route element={<ProtectedRoute allowedRoles={["client"]} />}>
             <Route path="/client/dashboard" element={<ClientDashboard />} />
           </Route>

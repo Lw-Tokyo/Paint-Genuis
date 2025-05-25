@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 
 const Budget = require("../models/Budget");
 
-// Save or update budget and dimensions
 router.post("/", async (req, res) => {
   try {
     const { userId, min, max } = req.body;
@@ -27,7 +26,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get budget by userId
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -49,7 +47,6 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-// Delete budget history entry
 router.delete("/:userId/history/:entryIndex", async (req, res) => {
   const { userId, entryIndex } = req.params;
   
@@ -68,7 +65,7 @@ router.delete("/:userId/history/:entryIndex", async (req, res) => {
       return res.status(400).json({ error: "Invalid history entry index" });
     }
     
-    // Remove the specified entry
+
     budget.history.splice(entryIndex, 1);
     await budget.save();
     

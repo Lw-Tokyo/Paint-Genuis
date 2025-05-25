@@ -1,4 +1,4 @@
-// client/src/components/budget/BudgetHistory.jsx
+
 import React from "react";
 import "./BudgetHistory.css";
 

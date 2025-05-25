@@ -7,26 +7,24 @@ const nodemailer = require('nodemailer');
 const User = require('../models/User');
 
 const validateEmail = (email) => {
-  // Basic email format validation
+ 
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
   
   if (!emailRegex.test(email)) {
     return { isValid: false, error: 'Please enter a valid email address.' };
   }
   
-  // Additional checks for repeated TLDs and other issues
+
   const domain = email.split('@')[1];
   const domainParts = domain.split('.');
   const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
   
-  // Check for patterns like domain.com.com
   for (let tld of tlds) {
     if (domain.includes(`.${tld}.${tld}`)) {
       return { isValid: false, error: 'Please enter a valid email address.' };
     }
   }
 
-  // Check for unreasonably long TLDs (likely mistakes)
   if (domainParts[domainParts.length - 1].length > 10) {
     return { isValid: false, error: 'Invalid email domain format.' };
   }
@@ -41,7 +39,6 @@ const generateToken = (user) => {
   });
 };
 
-// Email Transporter Setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -70,7 +67,6 @@ router.post('/signup', async (req, res) => {
   const nameRegex = /^[A-Za-z\s]+$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
   
-  // Use the new email validation function
   const emailValidation = validateEmail(email);
   if (!emailValidation.isValid) {
     return res.status(400).json({ error: emailValidation.error });
@@ -146,26 +142,24 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   
-  // Validate email format
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
   
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
   
-  // Additional check for repeated TLDs
   const domain = email.split('@')[1];
   const domainParts = domain.split('.');
   const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
   
-  // Check for patterns like domain.com.com
+
   for (let tld of tlds) {
     if (domain.includes(`.${tld}.${tld}`)) {
       return res.status(400).json({ error: 'Invalid email domain format.' });
     }
   }
   
-  // Check for unreasonably long TLDs (likely mistakes)
+
   if (domainParts[domainParts.length - 1].length > 10) {
     return res.status(400).json({ error: 'Invalid email domain format.' });
   }
@@ -182,12 +176,10 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    // Special exception for admin - don't require email verification
     if (!user.isVerified && user.role !== 'admin') {
       return res.status(401).json({ error: 'Please verify your email before logging in' });
     }
 
-    // Generate authentication token
     const token = generateToken(user);
 
     res.status(200).json({
@@ -210,7 +202,6 @@ router.get('/verify/:token', async (req, res) => {
   const { token } = req.params;
 
   try {
-    // First check if user exists with this token, regardless of expiry
     const user = await User.findOne({
       verificationToken: token,
     });
@@ -219,17 +210,16 @@ router.get('/verify/:token', async (req, res) => {
       return res.status(400).json({ error: 'Invalid verification token' });
     }
 
-    // If user is already verified, return success
+  
     if (user.isVerified) {
       return res.status(200).json({ message: 'Email already verified. You can log in.' });
     }
 
-    // Check if token is expired only if the user is not yet verified
+  
     if (user.verificationExpires < Date.now()) {
       return res.status(400).json({ error: 'Verification token has expired' });
     }
 
-    // Update user to verified status
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationExpires = undefined;
@@ -248,7 +238,7 @@ router.get('/check-verified/:token', async (req, res) => {
   const { token } = req.params;
 
   try {
-    // Find the user associated with this token, regardless of expiry
+ 
     const user = await User.findOne({
       verificationToken: token,
     });
@@ -257,7 +247,6 @@ router.get('/check-verified/:token', async (req, res) => {
       return res.status(404).json({ error: 'User not found with this token' });
     }
 
-    // Return whether the user is already verified
     return res.status(200).json({ 
       isVerified: user.isVerified,
       message: user.isVerified ? 
@@ -275,26 +264,23 @@ router.get('/check-verified/:token', async (req, res) => {
 router.post('/resend-verification', async (req, res) => {
   const { email } = req.body;
   
-  // Validate email format
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
   
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
   
-  // Additional check for repeated TLDs
   const domain = email.split('@')[1];
   const domainParts = domain.split('.');
   const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
-  
-  // Check for patterns like domain.com.com
+
   for (let tld of tlds) {
     if (domain.includes(`.${tld}.${tld}`)) {
       return res.status(400).json({ error: 'Invalid email domain format.' });
     }
   }
   
-  // Check for unreasonably long TLDs (likely mistakes)
+
   if (domainParts[domainParts.length - 1].length > 10) {
     return res.status(400).json({ error: 'Invalid email domain format.' });
   }
@@ -348,32 +334,28 @@ router.post('/resend-verification', async (req, res) => {
   }
 });
 
-// POST /api/auth/forgot-password
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
 
   console.log("Forgot Password Request Received for Email:", email);
   
-  // Validate email format
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$/;
   
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
   
-  // Additional check for repeated TLDs
   const domain = email.split('@')[1];
   const domainParts = domain.split('.');
   const tlds = ['com', 'net', 'org', 'edu', 'gov', 'mil', 'io', 'co', 'ai', 'app'];
   
-  // Check for patterns like domain.com.com
+
   for (let tld of tlds) {
     if (domain.includes(`.${tld}.${tld}`)) {
       return res.status(400).json({ error: 'Invalid email domain format.' });
     }
   }
   
-  // Check for unreasonably long TLDs (likely mistakes)
   if (domainParts[domainParts.length - 1].length > 10) {
     return res.status(400).json({ error: 'Invalid email domain format.' });
   }
@@ -386,7 +368,6 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiry

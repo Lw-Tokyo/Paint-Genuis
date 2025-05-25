@@ -7,12 +7,11 @@ router.post('/', async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
-    // Validate data
+
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'Please fill all fields.' });
     }
 
-    // Create new message
     const newMessage = new ContactMessage({ name, email, message });
 
     await newMessage.save();

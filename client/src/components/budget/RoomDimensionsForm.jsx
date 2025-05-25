@@ -1,4 +1,4 @@
-// client/src/components/budget/RoomDimensionsForm.jsx
+
 import React, { useState, useEffect } from "react";
 import "./RoomDimensionsForm.css";
 
@@ -11,7 +11,7 @@ function RoomDimensionsForm({ onSubmit, initialDimensions = null, initialCoats =
   
   const [coats, setCoats] = useState(initialCoats);
   
-  // Update form values if initialDimensions prop changes
+
   useEffect(() => {
     if (initialDimensions) {
       setDimensions({

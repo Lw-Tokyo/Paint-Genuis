@@ -1,4 +1,4 @@
-// client/src/components/budget/BudgetComparisonTable.jsx
+
 import React from "react";
 import "./BudgetComparisonTable.css";
 
@@ -24,7 +24,6 @@ const paintOptions = [
 ];
 
 function BudgetComparisonTable({ budget, recommendations = [] }) {
-  // Determine the best recommendation (highest quality that fits the budget)
   const getBestRecommendation = () => {
     if (recommendations.includes("Luxury")) return "Luxury";
     if (recommendations.includes("Premium")) return "Premium";

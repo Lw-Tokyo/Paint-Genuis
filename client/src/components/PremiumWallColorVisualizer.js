@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './PremiumWallColorVisualizer.css';
 
-// Paint color data with names, color codes, and types
 const paintColors = {
   standard: [
     { name: "Cloud White", hex: "#F8F8F8", code: "SW-001" },
@@ -35,7 +34,7 @@ const paintColors = {
   ]
 };
 
-// Room data
+
 const roomData = [
   { id: 'room1', name: 'Living Room', image: 'livingroom.png' },
   { id: 'room2', name: 'Living Room 2', image: 'livingroom2.png' },
@@ -44,7 +43,7 @@ const roomData = [
 ];
 
 function PremiumWallColorVisualizer() {
-  // States
+
   const [currentColor, setCurrentColor] = useState("#F8F8F8");
   const [currentColorDetails, setCurrentColorDetails] = useState({
     name: "Cloud White",
@@ -59,51 +58,45 @@ function PremiumWallColorVisualizer() {
   
   const wallRef = useRef(null);
   
-  // Function to add a color to recent colors
+
   const addToRecentColors = (color, name, code, type) => {
-    // Check if color already exists in recent colors
+   
     const exists = recentColors.some(rc => rc.hex === color);
     if (!exists) {
       const updatedRecents = [
         { hex: color, name, code, type },
-        ...recentColors.slice(0, 7) // Keep only the 8 most recent colors
+        ...recentColors.slice(0, 7) 
       ];
       setRecentColors(updatedRecents);
     }
   };
 
-  // Function to handle color selection
   const handleColorSelect = (color, name, code, type) => {
     setCurrentColor(color);
     setCurrentColorDetails({ name, code, type });
     addToRecentColors(color, name, code, type);
   };
 
-  // Function to handle room selection
   const handleRoomChange = (event) => {
     setSelectedRoom(event.target.value);
   };
 
-  // Function to handle brightness change
   const handleBrightnessChange = (event) => {
     setBrightness(event.target.value);
   };
 
-  // Function to handle saturation change
   const handleSaturationChange = (event) => {
     setSaturation(event.target.value);
   };
 
-  // Update the wall color when related states change
   useEffect(() => {
     if (wallRef.current) {
-      // Apply color with brightness and saturation adjustments
       wallRef.current.style.backgroundColor = currentColor;
       wallRef.current.style.filter = `brightness(${brightness}%) saturate(${saturation}%)`;
     }
   }, [currentColor, brightness, saturation]);
 
-  // Get current room image
+
   const getCurrentRoomImage = () => {
     const room = roomData.find(r => r.id === selectedRoom);
     return room ? room.image : roomData[0].image;
@@ -120,7 +113,7 @@ function PremiumWallColorVisualizer() {
 
       <div className="premium-visualizer-content">
         <div className="premium-visualizer-main">
-          {/* Room Selector */}
+          {}
           <div className="room-selector">
             <label htmlFor="room-select">Choose a Room:</label>
             <select 
@@ -135,7 +128,7 @@ function PremiumWallColorVisualizer() {
             </select>
           </div>
 
-          {/* Visualizer Area */}
+          {}
           <div className="visualizer-area">
             <div 
               className="wall-background" 
@@ -152,7 +145,7 @@ function PremiumWallColorVisualizer() {
             />
           </div>
 
-          {/* Current Color Info */}
+          {}
           <div className="current-color-info">
             <div 
               className="current-color-swatch" 
@@ -167,7 +160,7 @@ function PremiumWallColorVisualizer() {
         </div>
 
         <div className="premium-visualizer-sidebar">
-          {/* Paint Type Tabs */}
+          {}
           <div className="paint-type-tabs">
             <button 
               className={`tab-button ${activeTab === 'standard' ? 'active' : ''}`}
@@ -195,7 +188,7 @@ function PremiumWallColorVisualizer() {
             </button>
           </div>
 
-          {/* Color Palette */}
+          {}
           <div className="color-palette">
             {activeTab === 'recent' ? (
               <div className="color-grid">
@@ -242,7 +235,7 @@ function PremiumWallColorVisualizer() {
             )}
           </div>
 
-          {/* Controls */}
+          {}
           <div className="color-controls">
             <div className="control-group">
               <label htmlFor="brightness">

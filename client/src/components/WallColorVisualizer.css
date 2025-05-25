@@ -1,4 +1,3 @@
-/* WallColorVisualizer.css */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 * {
@@ -70,7 +69,7 @@ body {
   margin-bottom: 2rem;
   background-color: #f1f1f1;
   height: 0;
-  padding-bottom: 60%; /* Aspect ratio 5:3 */
+  padding-bottom: 60%;
 }
 
 .canvas-container {
@@ -297,7 +296,6 @@ body {
   color: #7f8c8d;
 }
 
-/* Form Select Styles */
 .form-select {
   width: 100%;
   padding: 0.75rem;
@@ -318,7 +316,6 @@ body {
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-/* File Upload Styles */
 .upload-section {
   margin-bottom: 2rem;
   text-align: center;
@@ -348,7 +345,6 @@ body {
   background-color: #2980b9;
 }
 
-/* Editor Styles */
 .editor-container {
   display: flex;
   flex-direction: column;
@@ -456,7 +452,6 @@ body {
   color: #4a5568;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -477,7 +472,6 @@ body {
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .visualizer-container,
   .mask-generator-container {

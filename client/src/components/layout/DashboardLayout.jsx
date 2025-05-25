@@ -1,4 +1,4 @@
-// src/components/layout/DashboardLayout.jsx
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
@@ -32,7 +32,7 @@ function DashboardLayout({ children, role }) {
 
   return (
     <div className="d-flex vh-100 bg-dark text-white">
-      {/* Sidebar */}
+      {}
       <div className="bg-secondary p-3" style={{ width: "250px" }}>
         <h4 className="mb-4">Paint Genius</h4>
         <nav className="nav flex-column">
@@ -54,7 +54,7 @@ function DashboardLayout({ children, role }) {
         </nav>
       </div>
 
-      {/* Main Content */}
+      {}
       <div
         className="flex-grow-1 p-4 overflow-auto"
       >

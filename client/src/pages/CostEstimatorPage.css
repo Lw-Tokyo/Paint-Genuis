@@ -12,7 +12,7 @@
   font-size: 2.5rem;
   margin-bottom: 30px;
   text-align: center;
-  color: #3b82f6; /* Blueish */
+  color: #3b82f6;
 }
 
 .cost-form {
@@ -106,7 +106,7 @@
 }
 
 .highlight {
-  color: #60a5fa; /* Soft blue */
+  color: #60a5fa;
   font-weight: bold;
 }
 
@@ -123,7 +123,6 @@
   animation: fadeInUp 0.5s forwards;
 }
 
-/* Custom styles for the skeleton loader */
 .skeleton {
   background-color: #21262d !important;
   border-radius: 6px;

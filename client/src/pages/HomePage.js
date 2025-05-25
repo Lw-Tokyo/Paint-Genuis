@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import "./HomePage.css";
 
 function HomePage() {
-  // Features data
   const features = [
     {
       id: "visualizer",
@@ -43,7 +42,7 @@ function HomePage() {
     }
   ];
 
-  // Testimonials data
+
   const testimonials = [
     {
       quote: "Paint Genius saved me hundreds of dollars on my renovation by helping me calculate exactly how much paint I needed.",
@@ -67,7 +66,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      {/* Hero Section */}
+      {}
       <section className="hero-section">
         <div className="hero-content">
           <div className="brand-container">
@@ -117,7 +116,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {}
       <section className="features-section">
         <div className="section-header">
           <span className="section-badge">PREMIUM TOOLS</span>
@@ -141,7 +140,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {}
       <section className="how-it-works-section">
         <div className="section-header">
           <span className="section-badge">SIMPLE PROCESS</span>
@@ -176,7 +175,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Feature Showcase - Visualizer */}
+      {}
       <section className="feature-showcase">
         <div className="showcase-container">
           <div className="showcase-content">
@@ -212,7 +211,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Feature Showcase - Cost Estimator */}
+      {}
       <section className="feature-showcase reverse">
         <div className="showcase-container">
           <div className="showcase-image cost-estimator-showcase"></div>
@@ -248,7 +247,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {}
       <section className="testimonials-section">
         <div className="section-header">
           <span className="section-badge">USER STORIES</span>
@@ -273,7 +272,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* App Preview Section */}
+      {}
       <section className="app-preview-section">
         <div className="section-header">
           <span className="section-badge">MULTI-PLATFORM</span>
@@ -324,7 +323,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {}
       <section className="cta-section">
         <div className="cta-container">
           <span className="section-badge cta-badge">GET STARTED</span>

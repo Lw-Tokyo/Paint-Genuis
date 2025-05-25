@@ -1,4 +1,4 @@
-// client/src/pages/AuthPages.jsx
+
 
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,7 +8,7 @@ import { UserContext } from "../context/UserContext";
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "contractor" });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "client" });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +16,6 @@ function AuthPage() {
   const location = useLocation();
   const { setUser } = useContext(UserContext);
 
-  // Check if there's any stored email and password from a recent signup
   useEffect(() => {
     const lastEmail = sessionStorage.getItem('lastSignupEmail');
     const lastPassword = sessionStorage.getItem('lastSignupPassword');
@@ -28,12 +27,12 @@ function AuthPage() {
         password: lastPassword || ''
       }));
       
-      // Clear the stored credentials after using them
+
       sessionStorage.removeItem('lastSignupEmail');
       sessionStorage.removeItem('lastSignupPassword');
     }
     
-    // Check URL params for any messages
+ 
     const params = new URLSearchParams(location.search);
     const successMsg = params.get('signupSuccess');
     if (successMsg) {
@@ -46,7 +45,7 @@ function AuthPage() {
     setIsLogin(!isLogin);
     setError("");
     setMessage("");
-    setFormData({ name: "", email: "", password: "", role: "contractor" });
+    setFormData({ name: "", email: "", password: "", role: "client" });
   };
 
   const handleChange = (e) => {
@@ -71,7 +70,7 @@ function AuthPage() {
           navigate(`/${user.role}/dashboard`);
         }
       } else {
-        // Validate inputs before submitting
+
         if (!nameRegex.test(formData.name)) {
           setError("Name can only contain letters and spaces.");
           setIsLoading(false);
@@ -90,15 +89,14 @@ function AuthPage() {
           return;
         }
 
-        // Call signup
+
         const result = await AuthService.signup(formData.name, formData.email, formData.password, formData.role);
         
         if (result.success) {
-          // Store email and password in sessionStorage for auto-fill in login
+
           sessionStorage.setItem('lastSignupEmail', formData.email);
           sessionStorage.setItem('lastSignupPassword', formData.password);
           
-          // Redirect to login with success message
           const successMsg = encodeURIComponent("User created successfully. Please check your email to verify your account.");
           navigate(`/auth?signupSuccess=${successMsg}`);
         }
@@ -141,7 +139,6 @@ function AuthPage() {
               <label>Role</label>
               <select name="role" value={formData.role} onChange={handleChange} required className="form-select">
                 <option value="contractor">Contractor</option>
-                <option value="painter">Painter</option>
                 <option value="client">Client</option>
               </select>
             </div>

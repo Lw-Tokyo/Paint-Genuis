@@ -1,4 +1,3 @@
-// client/src/pages/VerifyEmail.jsx
 
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
@@ -14,14 +13,13 @@ function VerifyEmail() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        // First check if the user is already verified
+      
         const checkStatus = await AuthService.checkVerificationStatus(token);
         
         if (checkStatus.isVerified) {
           setStatus('success');
           setMessage('Your email has already been verified. You can now log in.');
           
-          // Auto redirect to login after 3 seconds
           setTimeout(() => {
             navigate('/auth');
           }, 3000);
@@ -29,12 +27,11 @@ function VerifyEmail() {
           return;
         }
         
-        // If not verified, try to verify
         const response = await AuthService.verifyEmail(token);
         setStatus('success');
         setMessage(response.message);
         
-        // Auto redirect to login after 3 seconds
+    
         setTimeout(() => {
           navigate('/auth');
         }, 1000);
@@ -46,7 +43,7 @@ function VerifyEmail() {
     };
 
     if (token) {
-      // Add a slight delay to ensure the "verifying" state is visible
+
       setTimeout(() => {
         verifyEmail();
       }, 1500);

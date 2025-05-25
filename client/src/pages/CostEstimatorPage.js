@@ -10,7 +10,7 @@ function CostEstimatorPage() {
     width: '',
     height: '',
     paintType: 'standard',
-    coats: 3, // Default value
+    coats: 3, 
   });
 
   const [estimate, setEstimate] = useState(null);
@@ -21,7 +21,7 @@ function CostEstimatorPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (value < 0) return; // prevent negative input
+    if (value < 0) return; 
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 

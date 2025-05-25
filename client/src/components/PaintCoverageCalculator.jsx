@@ -21,12 +21,12 @@ const PaintCoverageCalculator = () => {
     if (inputMethod === "area") {
       return parseFloat(area) || 0;
     } else {
-      // Calculate wall area (excluding ceiling) using room dimensions
+    
       const width = parseFloat(roomWidth) || 0;
       const length = parseFloat(roomLength) || 0;
       const height = parseFloat(roomHeight) || 0;
       
-      // Area = 2 * (length * height) + 2 * (width * height)
+
       return 2 * (length * height) + 2 * (width * height);
     }
   };

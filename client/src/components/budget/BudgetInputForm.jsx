@@ -1,4 +1,4 @@
-// client/src/components/budget/BudgetInputForm.jsx
+
 import React, { useState, useEffect } from "react";
 import "./BudgetInputForm.css";
 
@@ -6,7 +6,6 @@ function BudgetInputForm({ onSubmit, initialMin = "", initialMax = "" }) {
   const [min, setMin] = useState(initialMin);
   const [max, setMax] = useState(initialMax);
       
-  // Update form values if initialMin/initialMax props change
   useEffect(() => {
     if (initialMin !== "") setMin(initialMin);
     if (initialMax !== "") setMax(initialMax);

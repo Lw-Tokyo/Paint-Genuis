@@ -1,4 +1,4 @@
-// client/src/components/budget/BudgetAlert.jsx
+
 import React from "react";
 
 function BudgetAlert({ estimate, budget, isOver }) {

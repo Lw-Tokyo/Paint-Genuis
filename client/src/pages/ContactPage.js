@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import './ContactPage.css';
-import axios from 'axios'; // npm install axios
+import axios from 'axios'; 
 
 function ContactPage() {
   const [formData, setFormData] = useState({

@@ -1,4 +1,4 @@
-// client/src/components/budget/BudgetRecommendations.jsx
+
 import React from "react";
 import "./BudgetRecommendations.css";
 
@@ -7,7 +7,6 @@ const BudgetRecommendations = ({ recommendations }) => {
     return <div className="text-center mt-3">No recommendations available.</div>;
   }
 
-  // Determine the best recommendation (highest quality that fits the budget)
   const getBestRecommendation = () => {
     if (recommendations.includes("Luxury")) return "Luxury";
     if (recommendations.includes("Premium")) return "Premium";

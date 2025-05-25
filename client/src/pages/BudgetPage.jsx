@@ -1,4 +1,4 @@
-// client/src/pages/BudgetPage.jsx
+
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import BudgetInputForm from "../components/budget/BudgetInputForm";
@@ -41,12 +41,12 @@ function BudgetPage() {
           setRecommendations(recommendations || []);
           setCoats(coats);
         } else {
-          // Initialize with empty budget for new users
+    
           setBudget({ min: 0, max: 0, history: [] });
           setShowBudgetForm(true);
         }
       } catch (err) {
-        // Handle 404 (no budget found) gracefully
+       
         if (err.response && err.response.status === 404) {
           setBudget({ min: 0, max: 0, history: [] });
           setShowBudgetForm(true);
@@ -92,7 +92,7 @@ function BudgetPage() {
         setCoats(res.data.coats);
       }
       
-      // Hide the forms after successful submission
+    
       setShowBudgetForm(false);
       setShowDimensionsForm(false);
     } catch (err) {
@@ -132,7 +132,6 @@ function BudgetPage() {
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   
-  // Make sure budget state is properly initialized before rendering
   if (!budget) return <div className="text-center mt-5">Initializing budget...</div>;
 
   const hasBudget = budget?.min > 0 && budget?.max > 0;
@@ -141,7 +140,7 @@ function BudgetPage() {
     <div className="budget-page-container">
       <h2 className="mb-4 text-center">Manage Your Painting Budget</h2>
 
-      {/* Budget Management Controls */}
+      {}
       {hasBudget && (
         <div className="budget-controls d-flex justify-content-center mb-4">
           <button 
@@ -159,7 +158,7 @@ function BudgetPage() {
         </div>
       )}
 
-      {/* Current Budget & Dimensions Display */}
+      {}
       {hasBudget && !showBudgetForm && !showDimensionsForm && (
         <div className="current-settings p-3 mb-4 bg-light rounded">
           <div className="row">
@@ -182,7 +181,7 @@ function BudgetPage() {
         </div>
       )}
 
-      {/* Forms */}
+      {}
       {(!hasBudget || showBudgetForm) && (
         <div className="budget-section">
           <h4 className="text-center mb-3">Set Your Budget</h4>
@@ -205,7 +204,7 @@ function BudgetPage() {
         </div>
       )}
 
-      {/* Results */}
+      {}
       {roomDimensions && !showBudgetForm && !showDimensionsForm && (
         <>
           <BudgetAlert estimate={estimate} budget={budget} isOver={isOverBudget} />
@@ -214,7 +213,7 @@ function BudgetPage() {
         </>
       )}
 
-      {/* Budget History Section */}
+      {}
       <div className="history-section">
         <h4 className="text-center mt-4">Your Budget History</h4>
         <BudgetHistory history={budget.history} onDelete={handleHistoryDelete} />
