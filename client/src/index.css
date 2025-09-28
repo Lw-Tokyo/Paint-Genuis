@@ -1,0 +1,100 @@
+body {
+  background-color: #121212;
+  color: #d1d5db;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #0d1117 !important;
+}
+
+.navbar .nav-link {
+  color: #d1d5db !important;
+  margin-right: 15px;
+}
+
+.navbar .nav-link:hover {
+  color: #3b82f6 !important;
+}
+
+.navbar-toggler {
+  border-color: #d1d5db;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(209,213,219, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.footer-dark {
+  background-color: #0d1117;
+  color: #d1d5db;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.footer-line {
+  border-top: 1px solid #2d3748;
+  margin-bottom: 15px;
+}
+
+.footer-icon {
+  color: #9ca3af;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.footer-icon:hover {
+  color: #3b82f6;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+  background-color: #60a5fa;
+  border-color: #60a5fa;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #ffffff;
+}
+
+a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #60a5fa;
+}
+
+input,
+select,
+textarea {
+  background-color: #1e1e1e;
+  color: #d1d5db;
+  border: 1px solid #333;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}

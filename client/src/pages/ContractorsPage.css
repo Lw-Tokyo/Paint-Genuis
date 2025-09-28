@@ -1,0 +1,278 @@
+/* ContractorsPage.css */
+
+.contractors-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.contractors-page h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* Search Form */
+.search-form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-form input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  width: 250px;
+  transition: all 0.3s ease;
+}
+
+.search-form input:focus {
+  border-color: #0077ff;
+  box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
+  outline: none;
+}
+
+.search-form button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-form button:hover {
+  background: linear-gradient(135deg, #005fcc, #0099cc);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 119, 255, 0.2);
+}
+
+/* Contractor List */
+.contractor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Contractor Card */
+.contractor-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contractor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.contractor-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.contractor-card p {
+  margin: 0.3rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.contractor-card .contact-btn {
+  margin-top: auto;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contractor-card .contact-btn:hover {
+  background: linear-gradient(135deg, #1e7e34, #198754);
+  transform: translateY(-2px);
+}
+/* ContractorsPage.css */
+
+/* ===== BASE STYLES (Already Added) ===== */
+.contractors-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.contractors-page h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-form input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  width: 250px;
+  transition: all 0.3s ease;
+}
+
+.search-form input:focus {
+  border-color: #0077ff;
+  box-shadow: 0 0 6px rgba(0, 119, 255, 0.3);
+  outline: none;
+}
+
+.search-form button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-form button:hover {
+  background: linear-gradient(135deg, #005fcc, #0099cc);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 119, 255, 0.2);
+}
+
+.contractor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.contractor-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contractor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.contractor-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.contractor-card p {
+  margin: 0.3rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.contractor-card .contact-btn {
+  margin-top: auto;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contractor-card .contact-btn:hover {
+  background: linear-gradient(135deg, #1e7e34, #198754);
+  transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .contractors-page {
+    padding: 1.5rem;
+  }
+
+  .contractors-page h1 {
+    font-size: 1.8rem;
+  }
+
+  .search-form input {
+    width: 200px;
+  }
+
+  .contractor-card {
+    padding: 1.2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .contractors-page {
+    padding: 1rem;
+  }
+
+  .contractors-page h1 {
+    font-size: 1.5rem;
+  }
+
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-form input {
+    width: 100%;
+  }
+
+  .search-form button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .contractor-list {
+    grid-template-columns: 1fr; /* single column */
+  }
+
+  .contractor-card {
+    padding: 1rem;
+  }
+}

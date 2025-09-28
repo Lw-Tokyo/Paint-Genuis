@@ -1,0 +1,20 @@
+.contractor-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 10px 0;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.contractor-card h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #333;
+}
+
+.contractor-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
