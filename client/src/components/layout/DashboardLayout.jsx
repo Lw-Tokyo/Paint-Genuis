@@ -1,3 +1,4 @@
+
 // client/src/components/layout/DashboardLayout.jsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -5,7 +6,9 @@ import AuthService from "../../services/AuthService";
 
 function DashboardLayout({ children, role }) {
   const navigate = useNavigate();
+
   const user = AuthService.getCurrentUser(); // ✅ now we will use this
+
 
   const handleLogout = () => {
     AuthService.logout();
@@ -20,6 +23,7 @@ function DashboardLayout({ children, role }) {
     contractor: [
       { label: "Dashboard", to: "/contractor/dashboard" },
       { label: "Hire Painter", to: "/contractor/hire" },
+
       { label: "My Profile", to: "/contractor/create-profile" }, // ✅ added direct link
     ],
     painter: [
@@ -34,6 +38,7 @@ function DashboardLayout({ children, role }) {
 
   return (
     <div className="d-flex vh-100 bg-dark text-white">
+
       {/* Sidebar */}
       <div className="bg-secondary p-3" style={{ width: "250px" }}>
         <h4 className="mb-4">Paint Genius</h4>
@@ -47,11 +52,14 @@ function DashboardLayout({ children, role }) {
               {link.label}
             </Link>
           ))}
+
           <button className="btn btn-danger mt-4" onClick={handleLogout}>
+
             Logout
           </button>
         </nav>
       </div>
+
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4 overflow-auto">
@@ -71,4 +79,6 @@ function DashboardLayout({ children, role }) {
   );
 }
 
+
 export default DashboardLayout;
+

@@ -71,7 +71,9 @@ function AppContent() {
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
+
           <Route path="/contractors" element={<ContractorsPage />} />
+
           
           {}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>

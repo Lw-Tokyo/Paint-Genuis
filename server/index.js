@@ -10,6 +10,7 @@ const budgetRoutes = require("./routes/budgetRoutes");
 const estimateRoutes = require("./routes/estimateRoutes");
 const contractorRoutes = require("./routes/contractorRoutes");
 
+
 const app = express();
 
 app.use(cors());
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/estimate", estimateRoutes);
+
 app.use("/api/contractors", contractorRoutes);
 
 app.get("/", (req, res) => {
