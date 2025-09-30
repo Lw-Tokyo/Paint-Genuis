@@ -105,9 +105,8 @@ const ContractorDashboard = () => {
         {activeTab === "view" ? (
           <div>
             <h2>Profile Overview</h2>
-            <p><strong>Name:</strong> {user?.name || "N/A"}</p>
-            <p><strong>Email:</strong> {user?.email || "N/A"}</p>
-            
+            <p><strong>Name:</strong> {profile?.name || "N/A"}</p>
+            <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
             <p><strong>Phone:</strong> {profile?.phone || "N/A"}</p>
             <p><strong>Specialization:</strong> {profile?.specialization || "Painting Contractor"}</p>
             <p><strong>Availability:</strong> {profile?.availability || "Not specified"}</p>

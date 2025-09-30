@@ -9,7 +9,6 @@ exports.createContractor = async (req, res) => {
       return res.status(400).json({ message: "Profile already exists" });
     }
 
-    // ✅ Flexible handling of services (string OR array)
     let services = [];
     if (Array.isArray(req.body.services)) {
       services = req.body.services.map((s) => s.trim());
@@ -39,7 +38,6 @@ exports.createContractor = async (req, res) => {
 // Update contractor profile
 exports.updateContractor = async (req, res) => {
   try {
-    // ✅ Ensure services always array
     let updateData = { ...req.body };
     if (updateData.services) {
       if (Array.isArray(updateData.services)) {
@@ -80,7 +78,7 @@ exports.deleteContractor = async (req, res) => {
   }
 };
 
-// Get contractor profile by user ID
+// Get contractor profile by user ID (for contractor dashboard)
 exports.getContractorByUserId = async (req, res) => {
   try {
     const contractor = await Contractor.findOne({ user: req.params.userId });
@@ -94,13 +92,71 @@ exports.getContractorByUserId = async (req, res) => {
   }
 };
 
-// Public: search contractors
+// 🔹 NEW: Get contractor by contractor ID (Public Profile)
+exports.getContractorById = async (req, res) => {
+  try {
+    const contractor = await Contractor.findById(req.params.id)
+      .populate("user", "name email"); // pull name + email from User
+
+    if (!contractor) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    res.json(contractor);
+  } catch (err) {
+    console.error("❌ Get contractor by ID error:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Public search contractors
 exports.searchContractors = async (req, res) => {
   try {
-    const contractors = await Contractor.find();
-    res.json(contractors);
+    const { city, service, q, page = 1, limit = 12 } = req.query;
+    const query = {};
+
+    if (q) {
+      const regex = { $regex: q, $options: "i" };
+      query.$or = [
+        { companyName: regex },
+        { bio: regex },
+        { "location.city": regex },
+        { "location.state": regex },
+        { services: regex },
+      ];
+    }
+
+    if (city) {
+      query["location.city"] = { $regex: city, $options: "i" };
+    }
+
+    if (service) {
+      query.services = { $regex: service, $options: "i" };
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [items, total] = await Promise.all([
+      Contractor.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit))
+        .populate("user", "name email") // include contractor name + email in search
+        .lean(),
+      Contractor.countDocuments(query),
+    ]);
+
+    return res.status(200).json({
+      items,
+      meta: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        pages: Math.ceil(total / Number(limit)),
+      },
+    });
   } catch (err) {
-    console.error("❌ Search contractors error:", err.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("searchContractors error:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 };

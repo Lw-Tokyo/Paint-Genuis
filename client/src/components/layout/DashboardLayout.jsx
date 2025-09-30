@@ -1,84 +1,57 @@
-
 // client/src/components/layout/DashboardLayout.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../services/AuthService";
+import { Link, useLocation } from "react-router-dom";
+import "./DashboardLayout.css";
 
-function DashboardLayout({ children, role }) {
-  const navigate = useNavigate();
+function DashboardLayout({ children, role, user }) {
+  const location = useLocation();
 
-  const user = AuthService.getCurrentUser(); // ✅ now we will use this
-
-
-  const handleLogout = () => {
-    AuthService.logout();
-    navigate("/auth");
-  };
-
-  const navLinks = {
-    admin: [
-      { label: "Dashboard", to: "/admin/dashboard" },
-      { label: "Messages", to: "/admin/messages" },
+  // Sidebar links by role
+  const links = {
+    client: [
+      { path: "/client/dashboard", label: "Dashboard" },
+      { path: "/contractors", label: "Find Contractors" },
+      { path: "/messages", label: "Messages" },
     ],
     contractor: [
-      { label: "Dashboard", to: "/contractor/dashboard" },
-      { label: "Hire Painter", to: "/contractor/hire" },
-
-      { label: "My Profile", to: "/contractor/create-profile" }, // ✅ added direct link
+      { path: "/contractor/dashboard", label: "Dashboard" },
+      { path: "/jobs", label: "Jobs" },
+      { path: "/messages", label: "Messages" },
     ],
-    painter: [
-      { label: "Dashboard", to: "/painter/dashboard" },
-      { label: "Availability", to: "/painter/availability" },
-    ],
-    client: [
-      { label: "Dashboard", to: "/client/dashboard" },
-      { label: "Estimates", to: "/client/estimates" },
+    admin: [
+      { path: "/admin/dashboard", label: "Dashboard" },
+      { path: "/users", label: "Manage Users" },
+      { path: "/reports", label: "Reports" },
     ],
   };
 
   return (
-    <div className="d-flex vh-100 bg-dark text-white">
-
+    <div className="dashboard-container">
       {/* Sidebar */}
-      <div className="bg-secondary p-3" style={{ width: "250px" }}>
-        <h4 className="mb-4">Paint Genius</h4>
-        <nav className="nav flex-column">
-          {(navLinks[role] || []).map((link, index) => (
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2>👋 Welcome</h2>
+          <p className="username">{user?.name || "User"}</p>
+        </div>
+        <nav className="sidebar-nav">
+          {links[role]?.map((link) => (
             <Link
-              key={index}
-              to={link.to}
-              className="nav-link text-white mb-2"
+              key={link.path}
+              to={link.path}
+              className={`nav-link ${
+                location.pathname === link.path ? "active" : ""
+              }`}
             >
               {link.label}
             </Link>
           ))}
-
-          <button className="btn btn-danger mt-4" onClick={handleLogout}>
-
-            Logout
-          </button>
         </nav>
-      </div>
-
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-grow-1 p-4 overflow-auto">
-        {/* ✅ User header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="text-primary">
-            Welcome {user?.name || role}
-          </h2>
-          <small className="text-muted">
-            {user?.email}
-          </small>
-        </div>
-
-        {children}
-      </div>
+      <main className="main-content">{children}</main>
     </div>
   );
 }
 
-
 export default DashboardLayout;
-

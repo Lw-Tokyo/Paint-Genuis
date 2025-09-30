@@ -73,8 +73,7 @@ function AppContent() {
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
 
           <Route path="/contractors" element={<ContractorsPage />} />
-
-          
+          <Route path="/contractors/:id" element={<ContractorProfilePage />} />
           {}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />

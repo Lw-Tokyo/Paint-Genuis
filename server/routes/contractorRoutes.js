@@ -7,6 +7,7 @@ const {
   deleteContractor,
   searchContractors,
   getContractorByUserId,
+  getContractorById, // ✅ new
 } = require("../controllers/contractorController");
 
 const { authenticateToken, authorizeRoles } = require("../middleware/authMiddleware");
@@ -20,8 +21,11 @@ router.put("/:id", authenticateToken, authorizeRoles("contractor"), updateContra
 // Delete contractor profile by ID
 router.delete("/:id", authenticateToken, authorizeRoles("contractor"), deleteContractor);
 
-// Get contractor profile by userId
+// Get contractor profile by userId (private dashboard use)
 router.get("/user/:userId", authenticateToken, getContractorByUserId);
+
+// 🔹 Public: Get contractor by contractor ID
+router.get("/:id", getContractorById);
 
 // Public: search contractors
 router.get("/", searchContractors);
