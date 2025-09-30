@@ -139,3 +139,19 @@
   background: #4338ca;
   transform: scale(1.03);
 }
+.form textarea {
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+  font-size: 1rem;
+  min-height: 120px;
+  resize: none;
+  transition: all 0.3s;
+}
+.form textarea:focus {
+  border-color: #4f46e5;
+  outline: none;
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.6);
+}
