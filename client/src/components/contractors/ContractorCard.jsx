@@ -1,14 +1,15 @@
 // client/src/components/contractors/ContractorCard.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./ContractorCard.css";
 
 function ContractorCard({ contractor }) {
+  const navigate = useNavigate();
+
   const services = Array.isArray(contractor.services)
     ? contractor.services.join(", ")
     : contractor.services || "—";
 
-  // ✅ Fix: Support both string and object location
   const location =
     typeof contractor.location === "string"
       ? contractor.location
@@ -22,6 +23,12 @@ function ContractorCard({ contractor }) {
     contractor.bio && contractor.bio.length > 80
       ? contractor.bio.substring(0, 80) + "..."
       : contractor.bio || "No bio provided.";
+
+  const handleMessage = () => {
+    navigate("/messages", {
+      state: { contractorId: contractor._id, name: contractor.companyName },
+    });
+  };
 
   return (
     <div className="card h-100">
@@ -54,7 +61,7 @@ function ContractorCard({ contractor }) {
             View
           </Link>
 
-          {/* Direct call link if phone exists */}
+          {/* Call button */}
           {contractor.phone && (
             <a
               href={`tel:${contractor.phone}`}
@@ -63,6 +70,14 @@ function ContractorCard({ contractor }) {
               Call
             </a>
           )}
+
+          {/* ✅ New Message button */}
+          <button
+            className="btn btn-warning btn-sm"
+            onClick={handleMessage}
+          >
+            Message
+          </button>
         </div>
       </div>
     </div>

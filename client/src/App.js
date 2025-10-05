@@ -1,4 +1,3 @@
-
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -17,9 +16,8 @@ import { UserProvider } from "./context/UserContext";
 import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
 import VerifyEmail from "./pages/VerifyEmail";
 
-
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
-import MessagesPage from "./pages/admin/MessagesPage";
+import AdminMessagesPage from "./pages/admin/MessagesPage";   // ✅ renamed
 import ContractorDashboard from "./pages/contractor/ContractorDashboard";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import AuthPage from "./pages/AuthPage";
@@ -27,6 +25,7 @@ import ContractorsPage from "./pages/ContractorsPage";
 import CreateContractorProfile from "./pages/contractor/CreateContractorProfile";
 import ContractorProfilePage from "./pages/contractor/ContractorProfilePage";
 import EditContractorProfile from "./pages/contractor/EditContractorProfile";
+import MessagesPage from "./pages/messages/MessagesPage";     // ✅ client/contractor messaging
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
@@ -60,6 +59,7 @@ function AppContent() {
       <Navbar />
       <main className={mainClassName}>
         <Routes>
+          {/* Public Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/estimate" element={<CostEstimatorPage />} />
           <Route path="/budget" element={<BudgetPage />} />
@@ -72,15 +72,20 @@ function AppContent() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
 
+          {/* Client/Contractor Messaging */}
+          <Route path="/messages" element={<MessagesPage />} />
+
+          {/* Contractors */}
           <Route path="/contractors" element={<ContractorsPage />} />
           <Route path="/contractors/:id" element={<ContractorProfilePage />} />
-          {}
+
+          {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/messages" element={<MessagesPage />} />
+            <Route path="/admin/messages" element={<AdminMessagesPage />} /> {/* ✅ uses renamed */}
           </Route>
 
-          {}
+          {/* Contractor Routes */}
           <Route element={<ProtectedRoute allowedRoles={["contractor"]} />}>
             <Route path="/contractor/dashboard" element={<ContractorDashboard />} />
             <Route path="/contractor/create-profile" element={<CreateContractorProfile />} />
@@ -89,7 +94,7 @@ function AppContent() {
             <Route path="/contractor/edit/:id" element={<EditContractorProfile />} />
           </Route>
 
-          {}
+          {/* Client Routes */}
           <Route element={<ProtectedRoute allowedRoles={["client"]} />}>
             <Route path="/client/dashboard" element={<ClientDashboard />} />
           </Route>

@@ -1,74 +1,163 @@
+// client/src/pages/contractor/ContractorDashboard.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/UserContext";
-import axios from "axios";
+import ContractorService from "../../services/ContractorService";
+import MessagesPage from "../messages/MessagesPage";
 import "./ContractorDashboard.css";
 
 const ContractorDashboard = () => {
   const { user } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("view");
   const [profile, setProfile] = useState(null);
+  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
-    name: "",
+    companyName: "",
     email: "",
     phone: "",
-    specialization: "",
+    services: "",
     availability: "",
     location: "",
     bio: "",
   });
 
-  // Fetch contractor profile on mount
+  const getToken = () => user?.token || null;
+
+  // Load contractor profile
   useEffect(() => {
-    if (user?._id) {
-      axios
-        .get(`http://localhost:5000/api/contractors/${user._id}`)
-        .then((res) => {
-          setProfile(res.data);
-          setFormData({
-            name: res.data.name || "",
-            email: res.data.email || "",
-            phone: res.data.phone || "",
-            specialization: res.data.specialization || "",
-            availability: res.data.availability || "",
-            location: res.data.location || "",
-            bio: res.data.bio || "",
-          });
-        })
-        .catch((err) => console.error("❌ Fetch profile error:", err));
-    }
+    const fetchProfile = async () => {
+      if (!user) return;
+      try {
+        const userId = user._id || user.id;
+        const data = await ContractorService.getContractorByUserId(
+          userId,
+          getToken()
+        );
+        setProfile(data || null);
+
+        setFormData({
+          companyName: data?.companyName || "",
+          email: data?.user?.email || user?.email || "",
+          phone: data?.phone || "",
+          services: Array.isArray(data?.services)
+            ? data.services.join(", ")
+            : data?.services || "",
+          availability: data?.availability || "",
+          location: data?.location
+            ? `${data.location.city || ""}${
+                data.location.state ? ", " + data.location.state : ""
+              }`
+            : "",
+          bio: data?.bio || "",
+        });
+      } catch (err) {
+        console.warn(
+          "❌ Fetch profile error:",
+          err.response?.data || err.message || err
+        );
+        setProfile(null);
+        setFormData((prev) => ({
+          ...prev,
+          email: user?.email || prev.email,
+        }));
+      }
+    };
+    fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Handle form input
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value || "" }));
   };
 
-  // Handle form submit
+  const parseLocation = (locStr) => {
+    if (!locStr) return { city: "", state: "" };
+    const parts = locStr
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean);
+    return { city: parts[0] || "", state: parts[1] || "" };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+
+    if (!user) {
+      setMessage("Please login to update your profile.");
+      return;
+    }
+
+    const { city, state } = parseLocation(formData.location);
+
+    if (!formData.companyName?.trim() || !city?.trim()) {
+      setMessage("Company name and city are required.");
+      return;
+    }
+
+    const payload = {
+      companyName: formData.companyName.trim(),
+      services: formData.services
+        ? formData.services.split(",").map((s) => s.trim())
+        : [],
+      phone: formData.phone,
+      location: { city: city.trim(), state: state?.trim() || "" },
+      bio: formData.bio,
+      availability: formData.availability,
+    };
+
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/contractors/${user._id}`,
-        formData
-      );
-      setProfile(res.data); // update profile instantly
-      setActiveTab("view"); // go back to view mode
+      let res;
+      if (profile && profile._id) {
+        res = await ContractorService.updateContractor(
+          profile._id,
+          payload,
+          getToken()
+        );
+      } else {
+        res = await ContractorService.createContractor(payload, getToken());
+      }
+
+      setProfile(res);
+      setFormData({
+        companyName: res.companyName || "",
+        email: res.user?.email || user?.email || "",
+        phone: res.phone || "",
+        services: Array.isArray(res?.services)
+          ? res.services.join(", ")
+          : res?.services || "",
+        availability: res.availability || "",
+        location: res.location
+          ? `${res.location.city || ""}${
+              res.location.state ? ", " + res.location.state : ""
+            }`
+          : "",
+        bio: res.bio || "",
+      });
+
+      setMessage("✅ Profile saved successfully!");
+      setActiveTab("view");
     } catch (err) {
-      console.error("❌ Update profile error:", err);
-      alert("Failed to save profile. Check console/logs.");
+      console.error(
+        "❌ Update/Create profile error:",
+        err.response?.data || err.message || err
+      );
+      setMessage("❌ Failed to save profile. Check console/logs.");
     }
   };
 
   return (
     <div className="dashboard">
-      {/* Header */}
       <header className="dashboard-header">
         <h1>
-          Welcome, <span>{profile?.name || user?.name || "Contractor"}</span>
+          Welcome,{" "}
+          <span>
+            {profile?.companyName || user?.name || "Contractor"}
+          </span>
         </h1>
       </header>
 
-      {/* Stats Section */}
+      {/* Stats */}
       <div className="stats">
         <div className="stat-card">
           <h2>24</h2>
@@ -84,7 +173,7 @@ const ContractorDashboard = () => {
         </div>
       </div>
 
-      {/* Toggle Buttons */}
+      {/* Tabs */}
       <div className="toggle">
         <button
           className={activeTab === "view" ? "active" : ""}
@@ -98,29 +187,65 @@ const ContractorDashboard = () => {
         >
           ✏️ Update Profile
         </button>
+        <button
+          className={activeTab === "messages" ? "active" : ""}
+          onClick={() => setActiveTab("messages")}
+        >
+          💬 Messages
+        </button>
       </div>
 
-      {/* Content Section */}
+      {/* Content */}
       <div className="card">
+        {message && <div style={{ marginBottom: 12 }}>{message}</div>}
+
         {activeTab === "view" ? (
           <div>
             <h2>Profile Overview</h2>
-            <p><strong>Name:</strong> {profile?.name || "N/A"}</p>
-            <p><strong>Email:</strong> {profile?.email || "N/A"}</p>
-            <p><strong>Phone:</strong> {profile?.phone || "N/A"}</p>
-            <p><strong>Specialization:</strong> {profile?.specialization || "Painting Contractor"}</p>
-            <p><strong>Availability:</strong> {profile?.availability || "Not specified"}</p>
-            <p><strong>Location:</strong> {profile?.location || "Not specified"}</p>
-            <p><strong>Bio:</strong> {profile?.bio || "No bio available"}</p>
+            <p>
+              <strong>Company Name:</strong>{" "}
+              {profile?.companyName || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong>{" "}
+              {profile?.user?.email || user?.email || "N/A"}
+            </p>
+            <p>
+              <strong>Phone:</strong> {profile?.phone || "N/A"}
+            </p>
+            <p>
+              <strong>Services:</strong>{" "}
+              {Array.isArray(profile?.services)
+                ? profile.services.join(", ")
+                : profile?.services || "Not specified"}
+            </p>
+            <p>
+              <strong>Availability:</strong>{" "}
+              {profile?.availability || "Not specified"}
+            </p>
+            <p>
+              <strong>Location:</strong>{" "}
+              {profile?.location
+                ? `${profile.location.city || ""}${
+                    profile.location.state
+                      ? ", " + profile.location.state
+                      : ""
+                  }`
+                : "Not specified"}
+            </p>
+            <p>
+              <strong>Bio:</strong>{" "}
+              {profile?.bio || "No bio available"}
+            </p>
           </div>
-        ) : (
+        ) : activeTab === "update" ? (
           <form className="form" onSubmit={handleSubmit}>
             <h2>Update Profile</h2>
             <input
               type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
+              name="companyName"
+              placeholder="Company Name"
+              value={formData.companyName}
               onChange={handleChange}
             />
             <input
@@ -129,6 +254,7 @@ const ContractorDashboard = () => {
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
+              disabled
             />
             <input
               type="text"
@@ -139,9 +265,9 @@ const ContractorDashboard = () => {
             />
             <input
               type="text"
-              name="specialization"
-              placeholder="Specialization"
-              value={formData.specialization}
+              name="services"
+              placeholder="Services (comma-separated)"
+              value={formData.services}
               onChange={handleChange}
             />
             <input
@@ -154,7 +280,7 @@ const ContractorDashboard = () => {
             <input
               type="text"
               name="location"
-              placeholder="Location (City/Area)"
+              placeholder="Location (City, State)"
               value={formData.location}
               onChange={handleChange}
             />
@@ -164,8 +290,12 @@ const ContractorDashboard = () => {
               value={formData.bio}
               onChange={handleChange}
             ></textarea>
-            <button type="submit" className="save-btn">Save Changes</button>
+            <button type="submit" className="save-btn">
+              Save Changes
+            </button>
           </form>
+        ) : (
+          <MessagesPage />
         )}
       </div>
     </div>

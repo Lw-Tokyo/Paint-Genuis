@@ -3,6 +3,8 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/contractors";
 
+// ==================== UTILS ====================
+
 /**
  * Get stored token from localStorage
  */
@@ -35,7 +37,7 @@ const safeRequest = async (fn) => {
     const res = await fn();
     return res.data;
   } catch (error) {
-    console.error("API Error:", error.response?.data || error.message);
+    console.error("❌ Contractor API Error:", error.response?.data || error.message);
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
@@ -54,13 +56,17 @@ const buildQuery = (params) => {
  * Create contractor profile
  */
 const createContractor = (data, token) =>
-  safeRequest(() => axios.post(API_URL, data, getAuthHeader(token)));
+  safeRequest(() =>
+    axios.post(API_URL, data, getAuthHeader(token))
+  );
 
 /**
  * Update contractor profile
  */
 const updateContractor = (id, data, token) =>
-  safeRequest(() => axios.put(`${API_URL}/${id}`, data, getAuthHeader(token)));
+  safeRequest(() =>
+    axios.put(`${API_URL}/${id}`, data, getAuthHeader(token))
+  );
 
 /**
  * Delete contractor profile
@@ -81,11 +87,19 @@ const deleteContractor = (idOrToken, maybeToken) => {
 };
 
 /**
- * Get contractor profile by userId (private/dashboard)
+ * Get contractor profile by userId (dashboard use)
  */
 const getContractorByUserId = (userId, token) =>
   safeRequest(() =>
     axios.get(`${API_URL}/user/${userId}`, getAuthHeader(token))
+  );
+
+/**
+ * Get current logged-in contractor profile (shortcut for dashboard)
+ */
+const getMyContractorProfile = (token) =>
+  safeRequest(() =>
+    axios.get(`${API_URL}/me`, getAuthHeader(token))
   );
 
 /**
@@ -108,6 +122,7 @@ const ContractorService = {
   updateContractor,
   deleteContractor,
   getContractorByUserId,
+  getMyContractorProfile,
   getContractorById,
   searchContractors,
 };
