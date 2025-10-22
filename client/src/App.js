@@ -17,7 +17,7 @@ import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
 import VerifyEmail from "./pages/VerifyEmail";
 
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
-import AdminMessagesPage from "./pages/admin/MessagesPage";   // ✅ renamed
+import AdminMessagesPage from "./pages/admin/MessagesPage";   
 import ContractorDashboard from "./pages/contractor/ContractorDashboard";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import AuthPage from "./pages/AuthPage";
@@ -25,7 +25,8 @@ import ContractorsPage from "./pages/ContractorsPage";
 import CreateContractorProfile from "./pages/contractor/CreateContractorProfile";
 import ContractorProfilePage from "./pages/contractor/ContractorProfilePage";
 import EditContractorProfile from "./pages/contractor/EditContractorProfile";
-import MessagesPage from "./pages/messages/MessagesPage";     // ✅ client/contractor messaging
+import MessagesPage from "./pages/messages/MessagesPage";     
+import WallPaintVisualizer from "./pages/AIWallVisulaizer"
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
@@ -71,6 +72,7 @@ function AppContent() {
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
+          <Route path="/wallvisualizer" element={<WallPaintVisualizer />} />
 
           {/* Client/Contractor Messaging */}
           <Route path="/messages" element={<MessagesPage />} />
@@ -82,7 +84,7 @@ function AppContent() {
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/messages" element={<AdminMessagesPage />} /> {/* ✅ uses renamed */}
+            <Route path="/admin/messages" element={<AdminMessagesPage />} /> 
           </Route>
 
           {/* Contractor Routes */}

@@ -39,6 +39,26 @@ bower_components/
 .env.local
 .env.*.local
 
+# Python (Backend)
+# --------------------------
+backend/venv/
+backend/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Model weights or large files
+backend/models/*.pth
+backend/models/*.pt
+backend/models/*.onnx
+
+# Virtual environment names (just in case)
+env/
+venv/
+.venv/
+
+
 # Optional npm cache directory
 .npm/
 
