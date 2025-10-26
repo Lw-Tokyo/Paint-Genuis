@@ -25,8 +25,20 @@ function ContractorCard({ contractor }) {
       : contractor.bio || "No bio provided.";
 
   const handleMessage = () => {
+    // ✅ FIX: Use contractor.user (User ID) instead of contractor._id (Contractor doc ID)
+    const userId = contractor.user?._id || contractor.user;
+    
+    if (!userId) {
+      console.error("Cannot message contractor: User ID not found", contractor);
+      alert("Unable to message this contractor. Please try again later.");
+      return;
+    }
+    
     navigate("/messages", {
-      state: { contractorId: contractor._id, name: contractor.companyName },
+      state: { 
+        contractorId: userId,  // ✅ Use the User ID
+        name: contractor.companyName 
+      },
     });
   };
 
@@ -71,7 +83,7 @@ function ContractorCard({ contractor }) {
             </a>
           )}
 
-          {/* ✅ New Message button */}
+          {/* ✅ Message button */}
           <button
             className="btn btn-warning btn-sm"
             onClick={handleMessage}

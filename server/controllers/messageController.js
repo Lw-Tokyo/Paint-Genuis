@@ -9,7 +9,7 @@ const Contractor = require("../models/Contractor");
  */
 const sendMessage = async (req, res) => {
   try {
-    const receiver = req.body.receiver || req.body.receiverId || req.body.recipient;
+    const receiver = req.body.receiverId || req.body.receiver || req.body.recipient;
     const text = req.body.text || req.body.message || req.body.content;
     const sender = req.user.id;
 
@@ -25,8 +25,8 @@ const sendMessage = async (req, res) => {
 
     await message.save();
 
-    // populate sender + receiver for frontend (name + role)
-    const populatedMsg = await message
+    // ✅ FIX: Properly populate after save using findById
+    const populatedMsg = await Message.findById(message._id)
       .populate("sender", "name role")
       .populate("receiver", "name role");
 
@@ -83,10 +83,24 @@ const getUserConversations = async (req, res) => {
     const conversationsMap = new Map();
 
     messages.forEach((msg) => {
-      const otherUser =
-        msg.sender._id.toString() === userId ? msg.receiver : msg.sender;
-      const key = otherUser._id.toString();
+      // ✅ FIX: Check if sender/receiver exist before accessing _id
+      if (!msg.sender || !msg.receiver) {
+        console.warn("Skipping message with null sender/receiver:", msg._id);
+        return; // skip this message
+      }
 
+      // ✅ Handle both populated and non-populated references
+      const senderId = msg.sender._id ? msg.sender._id.toString() : msg.sender.toString();
+      const receiverId = msg.receiver._id ? msg.receiver._id.toString() : msg.receiver.toString();
+      
+      const otherUser = senderId === userId ? msg.receiver : msg.sender;
+      
+      if (!otherUser || !otherUser._id) {
+        console.warn("OtherUser is null for message:", msg._id);
+        return; // skip this message
+      }
+
+      const key = otherUser._id.toString();
       const existing = conversationsMap.get(key);
 
       if (
@@ -95,8 +109,8 @@ const getUserConversations = async (req, res) => {
       ) {
         conversationsMap.set(key, {
           _id: otherUser._id,
-          name: otherUser.name,
-          role: otherUser.role,
+          name: otherUser.name || "Unknown User",
+          role: otherUser.role || "user",
           lastMessage: msg.text,
           lastMessageAt: msg.createdAt,
         });
