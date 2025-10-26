@@ -5,12 +5,22 @@ import "./HomePage.css";
 function HomePage() {
   const features = [
     {
+      id: "ai-visualizer",
+      title: "AI Wall Paint Visualizer",
+      description: "Upload your room photo and let AI detect walls, generate masks, and visualize any color in real-time. See your perfect paint choice before you commit.",
+      icon: "magic",
+      path: "/wallvisualizer",
+      ctaText: "Try AI Visualizer",
+      gradient: "from-purple-500 to-pink-600",
+      featured: true
+    },
+    {
       id: "visualizer",
       title: "Visualizer Gallery",
-      description: "See how colors transform your space before you paint. Our interactive visualizer lets you explore a wide range of paint types and finishes applied to real-life room settings.",
+      description: "Explore pre-designed room settings with various paint types and finishes. Compare Standard, Premium, and Luxury options instantly.",
       icon: "palette",
       path: "/WallColorVisualizer",
-      ctaText: "Try Visualizer",
+      ctaText: "Browse Gallery",
       gradient: "from-indigo-500 to-purple-600"
     },
     {
@@ -42,7 +52,6 @@ function HomePage() {
     }
   ];
 
-
   const testimonials = [
     {
       quote: "Paint Genius saved me hundreds of dollars on my renovation by helping me calculate exactly how much paint I needed.",
@@ -66,19 +75,19 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      {}
+      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <div className="brand-container">
             <div className="brand-logo">Paint Genius</div>
-            <div className="brand-badge">Premium Tools</div>
+            <div className="brand-badge">AI Powered</div>
           </div>
-          <h1 className="hero-title">Design Your Space With <span className="hero-highlight">Confidence</span></h1>
+          <h1 className="hero-title">Design Your Space With <span className="hero-highlight">AI Confidence</span></h1>
           <p className="hero-subtitle">
-            Advanced painting tools powered by AI to visualize, estimate, and execute your perfect project
+            Revolutionary AI-powered painting tools that let you visualize, estimate, and execute your perfect project with intelligent precision
           </p>
           <div className="hero-cta">
-            <Link to="/WallColorVisualizer" className="btn-primary">Try Color Visualizer</Link>
+            <Link to="/wallvisualizer" className="btn-primary">Try AI Visualizer</Link>
             <Link to="/estimate" className="btn-secondary">Get Cost Estimate</Link>
           </div>
           <div className="hero-stats">
@@ -87,8 +96,8 @@ function HomePage() {
               <span className="stat-label">Premium Colors</span>
             </div>
             <div className="stat-item">
-              <span className="stat-number">98%</span>
-              <span className="stat-label">Estimation Accuracy</span>
+              <span className="stat-number">AI</span>
+              <span className="stat-label">Powered Detection</span>
             </div>
             <div className="stat-item">
               <span className="stat-number">30K+</span>
@@ -116,7 +125,80 @@ function HomePage() {
         </div>
       </section>
 
-      {}
+      {/* AI Visualizer Feature Spotlight */}
+      <section className="ai-feature-spotlight">
+        <div className="spotlight-container">
+          <div className="spotlight-badge-wrapper">
+            <span className="section-badge spotlight-badge">🤖 AI POWERED</span>
+          </div>
+          <div className="spotlight-content">
+            <h2 className="spotlight-title">AI Wall Paint Visualizer</h2>
+            <p className="spotlight-subtitle">
+              Experience the future of interior design with our revolutionary AI-powered wall paint visualizer
+            </p>
+            
+            <div className="ai-process-grid">
+              <div className="ai-process-card">
+                <div className="ai-process-number">1</div>
+                <div className="ai-process-icon">📸</div>
+                <h3>Upload Your Photo</h3>
+                <p>Simply upload a photo of your room or wall that you want to visualize</p>
+              </div>
+              
+              <div className="ai-process-card">
+                <div className="ai-process-number">2</div>
+                <div className="ai-process-icon">🎯</div>
+                <h3>AI Detection & Masking</h3>
+                <p>Our AI intelligently detects walls, furniture, and objects, generating precise masks in seconds</p>
+              </div>
+              
+              <div className="ai-process-card">
+                <div className="ai-process-number">3</div>
+                <div className="ai-process-icon">🎨</div>
+                <h3>Choose Your Color</h3>
+                <p>Select from our extensive color palette with Standard, Premium, and Luxury paint types</p>
+              </div>
+              
+              <div className="ai-process-card">
+                <div className="ai-process-number">4</div>
+                <div className="ai-process-icon">✨</div>
+                <h3>Instant Visualization</h3>
+                <p>See your wall transformed with realistic paint application in real-time</p>
+              </div>
+            </div>
+
+            <div className="ai-features-highlight">
+              <div className="ai-feature-badge">
+                <i className="icon-robot"></i>
+                <span>Advanced AI Mask Generation</span>
+              </div>
+              <div className="ai-feature-badge">
+                <i className="icon-zap"></i>
+                <span>Real-Time Processing</span>
+              </div>
+              <div className="ai-feature-badge">
+                <i className="icon-layers"></i>
+                <span>Smart Object Detection</span>
+              </div>
+              <div className="ai-feature-badge">
+                <i className="icon-palette"></i>
+                <span>Unlimited Color Options</span>
+              </div>
+            </div>
+
+            <div className="spotlight-cta">
+              <Link to="/wallvisualizer" className="btn-primary btn-large">
+                Try AI Visualizer Now
+              </Link>
+              <Link to="/WallColorVisualizer" className="btn-outline btn-large">
+                View Gallery Instead
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
       <section className="features-section">
         <div className="section-header">
           <span className="section-badge">PREMIUM TOOLS</span>
@@ -126,7 +208,8 @@ function HomePage() {
         
         <div className="features-grid">
           {features.map((feature) => (
-            <div className="feature-card" key={feature.id}>
+            <div className={`feature-card ${feature.featured ? 'featured-card' : ''}`} key={feature.id}>
+              {feature.featured && <div className="featured-ribbon">AI POWERED</div>}
               <div className={`feature-icon-container bg-gradient-to-br ${feature.gradient}`}>
                 <i className={`icon-${feature.icon}`}></i>
               </div>
@@ -140,7 +223,7 @@ function HomePage() {
         </div>
       </section>
 
-      {}
+      {/* How it Works Section */}
       <section className="how-it-works-section">
         <div className="section-header">
           <span className="section-badge">SIMPLE PROCESS</span>
@@ -175,20 +258,65 @@ function HomePage() {
         </div>
       </section>
 
-      {}
-      <section className="feature-showcase">
+      {/* AI Visualizer Detailed Showcase */}
+      <section className="feature-showcase ai-showcase">
         <div className="showcase-container">
           <div className="showcase-content">
-            <span className="section-badge">FEATURED TOOL</span>
-            <h2>Visualizer Gallery</h2>
+            <span className="section-badge">AI TECHNOLOGY</span>
+            <h2>Live Wall Paint Visualizer</h2>
             <p>
-              See how colors transform your space before you paint. Our interactive visualizer lets you explore a wide 
-              range of paint types and finishes applied to real-life room settings.
+              Our cutting-edge AI technology revolutionizes how you choose paint colors. Upload your own room photo 
+              and watch as artificial intelligence automatically detects walls, furniture, and objects with incredible precision.
             </p>
             <ul className="showcase-features">
               <li>
                 <i className="icon-check"></i>
-                <span>Preview colors and finishes on living rooms, bedrooms, kitchens, and more</span>
+                <span>AI-powered wall and object detection with advanced masking algorithms</span>
+              </li>
+              <li>
+                <i className="icon-check"></i>
+                <span>Automatic mask generation in seconds to minutes, separating walls from furniture</span>
+              </li>
+              <li>
+                <i className="icon-check"></i>
+                <span>Real-time color application from extensive palette with Standard, Premium, and Luxury options</span>
+              </li>
+              <li>
+                <i className="icon-check"></i>
+                <span>Realistic visualization showing exactly how colors will look in your actual space</span>
+              </li>
+              <li>
+                <i className="icon-check"></i>
+                <span>Compare multiple colors side-by-side to find your perfect match</span>
+              </li>
+              <li>
+                <i className="icon-check"></i>
+                <span>Save and share visualizations with contractors, designers, or family</span>
+              </li>
+            </ul>
+            <Link to="/wallvisualizer" className="btn-primary">
+              Experience AI Visualizer
+            </Link>
+          </div>
+          <div className="showcase-image ai-visualizer-showcase"></div>
+        </div>
+      </section>
+
+      {/* Gallery Visualizer Showcase */}
+      <section className="feature-showcase reverse">
+        <div className="showcase-container">
+          <div className="showcase-image visualizer-showcase"></div>
+          <div className="showcase-content">
+            <span className="section-badge">FEATURED TOOL</span>
+            <h2>Visualizer Gallery</h2>
+            <p>
+              Not ready to upload your own photo? Explore our curated gallery of pre-designed room settings. 
+              See how colors transform different spaces with various paint types and finishes.
+            </p>
+            <ul className="showcase-features">
+              <li>
+                <i className="icon-check"></i>
+                <span>Preview colors on living rooms, bedrooms, kitchens, and more</span>
               </li>
               <li>
                 <i className="icon-check"></i>
@@ -200,21 +328,19 @@ function HomePage() {
               </li>
               <li>
                 <i className="icon-check"></i>
-                <span>Share results with contractors and designers</span>
+                <span>Get inspired by professionally designed room settings</span>
               </li>
             </ul>
             <Link to="/WallColorVisualizer" className="btn-primary">
-              Try Color Visualizer
+              Browse Gallery
             </Link>
           </div>
-          <div className="showcase-image visualizer-showcase"></div>
         </div>
       </section>
 
-      {}
-      <section className="feature-showcase reverse">
+      {/* Cost Estimator Showcase */}
+      <section className="feature-showcase">
         <div className="showcase-container">
-          <div className="showcase-image cost-estimator-showcase"></div>
           <div className="showcase-content">
             <span className="section-badge">PREMIUM TOOL</span>
             <h2>Intelligent Cost Estimator</h2>
@@ -244,10 +370,11 @@ function HomePage() {
               Calculate Your Costs
             </Link>
           </div>
+          <div className="showcase-image cost-estimator-showcase"></div>
         </div>
       </section>
 
-      {}
+      {/* Testimonials Section */}
       <section className="testimonials-section">
         <div className="section-header">
           <span className="section-badge">USER STORIES</span>
@@ -272,7 +399,7 @@ function HomePage() {
         </div>
       </section>
 
-      {}
+      {/* App Preview Section */}
       <section className="app-preview-section">
         <div className="section-header">
           <span className="section-badge">MULTI-PLATFORM</span>
@@ -323,14 +450,14 @@ function HomePage() {
         </div>
       </section>
 
-      {}
+      {/* CTA Section */}
       <section className="cta-section">
         <div className="cta-container">
           <span className="section-badge cta-badge">GET STARTED</span>
           <h2>Ready to Transform Your Space?</h2>
           <p>Join thousands of homeowners who have simplified their painting projects with Paint Genius</p>
           <div className="cta-buttons">
-            <Link to="/WallColorVisualizer" className="btn-primary btn-large">Start with Color Visualizer</Link>
+            <Link to="/wallvisualizer" className="btn-primary btn-large">Try AI Visualizer</Link>
             <Link to="/estimate" className="btn-outline btn-large">Get Cost Estimate</Link>
           </div>
         </div>
