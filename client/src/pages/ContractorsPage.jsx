@@ -88,33 +88,40 @@ function ContractorsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetch = async (page = 1) => {
-    setLoading(true);
-    setError("");
-    try {
-      const q = [];
-      if (query) q.push(`q=${encodeURIComponent(query)}`);
-      if (city) q.push(`city=${encodeURIComponent(city)}`);
-      if (service) q.push(`service=${encodeURIComponent(service)}`);
-      q.push(`page=${page}`);
-      q.push(`limit=${meta.limit || 12}`);
-      const qs = q.length ? "?" + q.join("&") : "";
-      const res = await ContractorService.searchContractors(qs);
-      
-      if (res && res.items) {
-        setItems(res.items);
-        setMeta(res.meta || { page, limit: 12, pages: 1, total: res.items.length });
-      } else if (Array.isArray(res)) {
-        setItems(res);
-        setMeta({ page: 1, limit: res.length, pages: 1, total: res.length });
-      }
-    } catch (err) {
-      console.error("Search error:", err);
-      setError("Failed to load contractors.");
-    } finally {
-      setLoading(false);
+  // In ContractorsPage.jsx - Update the fetch function
+
+const fetch = async (page = 1) => {
+  setLoading(true);
+  setError("");
+  try {
+    const params = [];
+    if (query) params.push(`q=${encodeURIComponent(query)}`);
+    if (city) params.push(`city=${encodeURIComponent(city)}`);
+    if (service) params.push(`service=${encodeURIComponent(service)}`);
+    params.push(`page=${page}`);
+    params.push(`limit=${meta.limit || 12}`);
+    
+    const queryString = params.length ? "?" + params.join("&") : "";
+    
+    // USE searchContractors with query string
+    const res = await ContractorService.searchContractors(queryString);
+    
+    if (res.success && res.data) {
+      setItems(res.data);
+      setMeta({
+        page: res.page || 1,
+        limit: 12,
+        pages: res.pages || 1,
+        total: res.total || res.data.length
+      });
     }
-  };
+  } catch (err) {
+    console.error("Search error:", err);
+    setError("Failed to load contractors.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetch(1);

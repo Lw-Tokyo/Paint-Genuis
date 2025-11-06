@@ -1,7 +1,7 @@
-// client/src/pages/ContractorProfilePage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import ContractorService from "../../services/ContractorService";
+import ProjectTimelineEstimator from "../../components/ProjectTimelineEstimator";
 import "./ContractorProfilePage.css";
 
 function ContractorProfilePage() {
@@ -10,19 +10,22 @@ function ContractorProfilePage() {
   const [contractor, setContractor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showEstimator, setShowEstimator] = useState(false);
 
   useEffect(() => {
     fetchContractor();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchContractor = async () => {
     setLoading(true);
     setError("");
     try {
-      // Replace with your actual API call
       const res = await ContractorService.getContractorById(id);
-      setContractor(res);
+      if (res.success) {
+        setContractor(res.data);
+      } else {
+        setContractor(res);
+      }
     } catch (err) {
       console.error("Error fetching contractor:", err);
       setError("Failed to load contractor profile.");
@@ -45,6 +48,10 @@ function ContractorProfilePage() {
         name: contractor.companyName 
       },
     });
+  };
+
+  const handleGetEstimate = () => {
+    setShowEstimator(true);
   };
 
   if (loading) {
@@ -111,16 +118,20 @@ function ContractorProfilePage() {
           <div className="profile-header">
             <div className="profile-avatar">
               <div className="avatar-circle">
-                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                {contractor.profilePicture ? (
+                  <img src={contractor.profilePicture} alt={contractor.companyName} />
+                ) : (
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
               </div>
               <div className="premium-badge-large">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
-                Certified
+                {contractor.experience || 0}+ Years
               </div>
             </div>
 
@@ -144,7 +155,9 @@ function ContractorProfilePage() {
                     </svg>
                   ))}
                 </div>
-                <span className="rating-number-large">{rating.toFixed(1)} / 5.0</span>
+                <span className="rating-number-large">
+                  {rating.toFixed(1)} ({contractor.reviewCount || 0} reviews)
+                </span>
               </div>
 
               <div className="profile-quick-info">
@@ -160,7 +173,7 @@ function ContractorProfilePage() {
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  {contractor.experience || 0} years experience
+                  {contractor.hoursPerDay || 8}h/day • {contractor.workSpeed || 40} sq ft/h
                 </div>
                 <div className="quick-info-item">
                   <div className={`status-dot-large ${contractor.availability === 'Available' ? 'status-available' : 'status-busy'}`}></div>
@@ -216,7 +229,59 @@ function ContractorProfilePage() {
               </div>
             </div>
 
-            {/* Portfolio Section (Optional) */}
+            {/* Work Details Section */}
+            <div className="profile-section">
+              <h2 className="section-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Work Details
+              </h2>
+              <div className="work-details-grid">
+                <div className="detail-card">
+                  <div className="detail-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                  </div>
+                  <div className="detail-info">
+                    <span className="detail-label">Working Hours</span>
+                    <span className="detail-value">{contractor.hoursPerDay || 8} hours/day</span>
+                  </div>
+                </div>
+                <div className="detail-card">
+                  <div className="detail-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                  </div>
+                  <div className="detail-info">
+                    <span className="detail-label">Work Speed</span>
+                    <span className="detail-value">{contractor.workSpeed || 40} sq ft/hour</span>
+                  </div>
+                </div>
+                {contractor.hourlyRate > 0 && (
+                  <div className="detail-card">
+                    <div className="detail-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                      </svg>
+                    </div>
+                    <div className="detail-info">
+                      <span className="detail-label">Hourly Rate</span>
+                      <span className="detail-value">${contractor.hourlyRate}/hour</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Portfolio Section */}
             {contractor.portfolio && contractor.portfolio.length > 0 && (
               <div className="profile-section">
                 <h2 className="section-title">
@@ -231,6 +296,12 @@ function ContractorProfilePage() {
                   {contractor.portfolio.map((item, idx) => (
                     <div key={idx} className="portfolio-item">
                       <img src={item.imageUrl} alt={item.title || `Project ${idx + 1}`} />
+                      {item.title && (
+                        <div className="portfolio-overlay">
+                          <h4>{item.title}</h4>
+                          {item.description && <p>{item.description}</p>}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -241,8 +312,36 @@ function ContractorProfilePage() {
           {/* Right Column - Contact Card */}
           <div className="content-sidebar">
             <div className="contact-card">
-              <h3 className="contact-title">Get in Touch</h3>
+              <h3 className="contact-title">Get Started</h3>
               
+              <div className="contact-actions">
+                <button onClick={handleGetEstimate} className="contact-btn btn-estimate-large">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  Get Project Timeline
+                </button>
+
+                <button onClick={handleMessage} className="contact-btn btn-message-large">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  Send Message
+                </button>
+
+                {contractor.phone && (
+                  <a href={`tel:${contractor.phone}`} className="contact-btn btn-call-large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    Call Now
+                  </a>
+                )}
+              </div>
+
               <div className="contact-info">
                 {contractor.email && (
                   <div className="contact-item">
@@ -276,24 +375,6 @@ function ContractorProfilePage() {
                   </div>
                 )}
               </div>
-
-              <div className="contact-actions">
-                {contractor.phone && (
-                  <a href={`tel:${contractor.phone}`} className="contact-btn btn-call-large">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                    </svg>
-                    Call Now
-                  </a>
-                )}
-
-                <button onClick={handleMessage} className="contact-btn btn-message-large">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                  Send Message
-                </button>
-              </div>
             </div>
 
             {/* Additional Info Card */}
@@ -321,6 +402,14 @@ function ContractorProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Timeline Estimator Modal */}
+      {showEstimator && (
+        <ProjectTimelineEstimator
+          contractor={contractor}
+          onClose={() => setShowEstimator(false)}
+        />
+      )}
     </div>
   );
 }

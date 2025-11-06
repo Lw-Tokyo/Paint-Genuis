@@ -1,33 +1,20 @@
 // server/routes/contractorRoutes.js
 const express = require("express");
 const router = express.Router();
-const {
-  createContractor,
-  updateContractor,
-  deleteContractor,
-  searchContractors,
-  getContractorByUserId,
-  getContractorById, // ✅ new
-} = require("../controllers/contractorController");
-
+const contractorController = require("../controllers/contractorController");
 const { authenticateToken, authorizeRoles } = require("../middleware/authMiddleware");
 
-// Create contractor profile (Contractor only, one-time)
-router.post("/", authenticateToken, authorizeRoles("contractor"), createContractor);
+// ========== PUBLIC ROUTES (MUST BE FIRST) ==========
+router.get("/search", contractorController.searchContractors);
 
-// Update contractor profile by ID
-router.put("/:id", authenticateToken, authorizeRoles("contractor"), updateContractor);
+// ========== PROTECTED ROUTES ==========
+router.get("/me", authenticateToken, authorizeRoles("contractor"), contractorController.getMyProfile);
+router.get("/user/:userId", authenticateToken, contractorController.getContractorByUserId);
+router.post("/", authenticateToken, authorizeRoles("contractor"), contractorController.createContractor);
+router.put("/:id", authenticateToken, authorizeRoles("contractor"), contractorController.updateContractor);
+router.delete("/:id", authenticateToken, authorizeRoles("contractor"), contractorController.deleteContractor);
 
-// Delete contractor profile by ID
-router.delete("/:id", authenticateToken, authorizeRoles("contractor"), deleteContractor);
-
-// Get contractor profile by userId (private dashboard use)
-router.get("/user/:userId", authenticateToken, getContractorByUserId);
-
-// 🔹 Public: Get contractor by contractor ID
-router.get("/:id", getContractorById);
-
-// Public: search contractors
-router.get("/", searchContractors);
+// ========== PUBLIC ROUTES (DYNAMIC - MUST BE LAST) ==========
+router.get("/:id", contractorController.getContractorById);
 
 module.exports = router;

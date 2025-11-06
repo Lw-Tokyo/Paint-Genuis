@@ -142,13 +142,13 @@ html {
 }
 
 .hero-section {
-  position: relative;
-  padding: 6rem 2rem;
-  background: linear-gradient(135deg, #f9fafb 0%, #eff6ff 100%);
-  display: flex;
-  align-items: center;
-  min-height: 80vh;
-  overflow: hidden;
+  position: relative !important;
+  padding: 6rem 2rem !important;
+  background: linear-gradient(135deg, #f9fafbff 0%, #eff6ff 100%) !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 80vh !important;
+  overflow: hidden !important;
 }
 
 .hero-content {
@@ -187,10 +187,11 @@ html {
 }
 
 .hero-title {
-  font-size: 3.75rem;
-  font-weight: 800;
-  line-height: 1.1;
-  margin: 0 0 1.5rem;
+  font-size: 3.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  margin: 0 0 1.5rem !important;
+  color: black;
 }
 
 .hero-highlight {
@@ -198,17 +199,18 @@ html {
     135deg,
     var(--primary-color),
     var(--secondary-color)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  ) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-  max-width: 90%;
+  font-size: 1.25rem !important;
+  color: var(--text-secondary) !important;
+  margin-bottom: 2rem !important;
+  max-width: 90% !important;
+  color: black;
 }
 
 .hero-cta {

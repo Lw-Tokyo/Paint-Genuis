@@ -11,6 +11,7 @@ const budgetRoutes = require("./routes/budgetRoutes");
 const estimateRoutes = require("./routes/estimateRoutes");
 const contractorRoutes = require("./routes/contractorRoutes");
 const messageRoutes = require("./routes/messageRoutes"); // ✅ added
+const timelineRoutes = require('./routes/timelineRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/budget", budgetRoutes);
 app.use("/api/estimate", estimateRoutes);
 app.use("/api/contractors", contractorRoutes);
 app.use("/api/messages", messageRoutes); // ✅ added
+app.use('/api/timeline', timelineRoutes);
 
 // ✅ Root route
 app.get("/", (req, res) => {
