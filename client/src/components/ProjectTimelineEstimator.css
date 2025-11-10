@@ -1,5 +1,4 @@
-// client\src\components\ProjectTimelineEstimator.css
-/* TimelineEstimatorModal.css - Beautiful & Smooth */
+/* TimelineEstimatorModal.css - Fixed Active States */
 
 :root {
   --primary: #6366f1;
@@ -247,6 +246,7 @@
   background: var(--gray-50);
 }
 
+/* FIXED: Step dots with proper contrast */
 .step-dot {
   width: 40px;
   height: 40px;
@@ -265,7 +265,7 @@
 .step-dot.active {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   border-color: var(--primary);
-  color: white;
+  color: white !important; /* FIXED: White text on gradient background */
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
@@ -343,10 +343,11 @@
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
 }
 
+/* FIXED: Active type button with proper contrast */
 .type-btn.active {
   border-color: var(--primary);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-  color: var(--primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  color: var(--primary) !important; /* FIXED: Dark text on light background */
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
 }
@@ -568,10 +569,11 @@
   transform: translateY(-2px);
 }
 
+/* FIXED: Active condition button */
 .condition-btn.active {
   border-color: var(--primary);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-  color: var(--primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  color: var(--primary) !important; /* FIXED: Dark text on light background */
   transform: translateY(-2px);
 }
 
@@ -609,6 +611,7 @@
   display: none;
 }
 
+/* FIXED: Checked checkbox styling */
 .checkbox-card input[type="checkbox"]:checked ~ .checkbox-content {
   color: var(--primary);
 }
@@ -627,7 +630,8 @@
   transform: scale(1);
 }
 
-.checkbox-card input[type="checkbox"]:checked {
+/* FIXED: Checked card background */
+.checkbox-card:has(input[type="checkbox"]:checked) {
   border-color: var(--primary);
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
 }

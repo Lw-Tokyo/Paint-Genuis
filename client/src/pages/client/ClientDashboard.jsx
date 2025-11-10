@@ -15,7 +15,6 @@ function ClientDashboardPage() {
     <DashboardLayout role="client">
       <div className="dashboard-header">
         <h2>Welcome, {user?.name || "Client"} 👋</h2>
-        <p>Here's a quick look at your painting activities.</p>
       </div>
 
       {/* Tab Navigation */}
