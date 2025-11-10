@@ -26,8 +26,7 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
 
   const totalSteps = 3;
 
-  // Calculate estimate
-  // Update the calculateEstimate function in ProjectTimelineEstimator.jsx
+
 
 const calculateEstimate = async () => {
   setLoading(true);
@@ -152,7 +151,7 @@ const calculateEstimate = async () => {
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
               </div>
-              <h2 className="modal-title">Project Timeline Estimate</h2>
+              <h3 className="modal-title">Project Timeline Estimate</h3>
               <p className="modal-subtitle">with {contractor.companyName}</p>
             </div>
 

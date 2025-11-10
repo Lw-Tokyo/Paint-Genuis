@@ -14,16 +14,37 @@ function MessagesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const messagesEndRef = useRef(null);
+  const chatMessagesRef = useRef(null);
   const pollingIntervalRef = useRef(null);
+  const previousMessageCountRef = useRef(0);
 
-  // ✅ Auto-scroll to bottom when new messages arrive
+  // ✅ Smart auto-scroll: only scroll if user is near bottom or new message was added
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!chatMessagesRef.current) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = chatMessagesRef.current;
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    
+    // Only auto-scroll if user is within 100px of bottom (they're actively viewing latest messages)
+    if (distanceFromBottom < 100) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
+  // ✅ Scroll to bottom when messages actually increase (new message sent/received)
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > previousMessageCountRef.current) {
+      scrollToBottom();
+    }
+    previousMessageCountRef.current = messages.length;
   }, [messages]);
+
+  // ✅ Scroll to bottom when switching chats
+  useEffect(() => {
+    if (activeChat && messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }
+  }, [activeChat]);
 
   // ✅ Function to load conversations
   const loadConversations = async () => {
@@ -68,6 +89,7 @@ function MessagesPage() {
   useEffect(() => {
     if (activeChat && user?._id) {
       loadMessages();
+      previousMessageCountRef.current = 0; // Reset count on chat change
     } else {
       setMessages([]);
     }
@@ -151,7 +173,7 @@ function MessagesPage() {
               <h3>{activeChat.name}</h3>
             </div>
 
-            <div className="chat-messages">
+            <div className="chat-messages" ref={chatMessagesRef}>
               {messages.map((msg, index) => (
                 <div
                   key={msg._id || index}
