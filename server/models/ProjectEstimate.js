@@ -1,4 +1,5 @@
-// server/models/ProjectEstimate.js
+// server/models/ProjectEstimate.js (UPDATED - Add discount fields)
+
 const mongoose = require('mongoose');
 
 const projectEstimateSchema = new mongoose.Schema({
@@ -96,9 +97,41 @@ const projectEstimateSchema = new mongoose.Schema({
     }
   },
   estimatedCost: {
+    materialCost: Number,
     laborCost: Number,
+    totalCost: Number,
     hourlyRate: Number,
     totalHours: Number
+  },
+  // NEW: Discount information
+  discounts: {
+    originalAmount: {
+      type: Number,
+      default: 0
+    },
+    totalDiscount: {
+      type: Number,
+      default: 0
+    },
+    finalAmount: {
+      type: Number,
+      default: 0
+    },
+    discountPercentage: {
+      type: Number,
+      default: 0
+    },
+    appliedDiscounts: [{
+      discountId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Discount'
+      },
+      name: String,
+      code: String,
+      type: String,
+      amount: Number,
+      description: String
+    }]
   },
   status: {
     type: String,

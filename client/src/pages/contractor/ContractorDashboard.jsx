@@ -223,6 +223,11 @@ const ContractorDashboard = () => {
         >
           💬 Messages
         </button>
+        <button
+          onClick={() => window.location.href = "/contractor/discounts"}
+        >
+          🎁 Discounts & offers
+        </button>
       </div>
 
       {/* Content */}

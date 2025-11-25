@@ -28,6 +28,7 @@ import EditContractorProfile from "./pages/contractor/EditContractorProfile";
 import MessagesPage from "./pages/messages/MessagesPage";     
 import WallPaintVisualizer from "./pages/AIWallVisulaizer"
 import ProjectTimelineEstimator from './components/ProjectTimelineEstimator';
+import DiscountManagement from './pages/contractor/DiscountManagement';
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
@@ -75,6 +76,7 @@ function AppContent() {
           <Route path="/coverage-calculator" element={<PaintCoverageCalculator />} />
           <Route path="/wallvisualizer" element={<WallPaintVisualizer />} />
           <Route path="/timeline-estimator" element={<ProjectTimelineEstimator />} />
+          <Route path="/contractor/discounts" element={<DiscountManagement />} />
 
           {/* Client/Contractor Messaging */}
           <Route path="/messages" element={<MessagesPage />} />
@@ -88,7 +90,6 @@ function AppContent() {
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/messages" element={<AdminMessagesPage />} /> 
           </Route>
-
           {/* Contractor Routes */}
           <Route element={<ProtectedRoute allowedRoles={["contractor"]} />}>
             <Route path="/contractor/dashboard" element={<ContractorDashboard />} />

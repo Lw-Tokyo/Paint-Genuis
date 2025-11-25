@@ -1,4 +1,4 @@
-// server/routes/timelineRoutes.js
+// server/routes/timelineRoutes.js (UPDATED)
 const express = require('express');
 const router = express.Router();
 const timelineController = require('../controllers/timelineController');
@@ -6,6 +6,10 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 
 // All timeline routes require authentication
 router.post('/calculate', authenticateToken, timelineController.calculateTimeline);
+
+// NEW: Calculate with discounts
+router.post('/calculate-with-discounts', authenticateToken, timelineController.calculateTimelineWithDiscounts);
+
 router.post('/save', authenticateToken, timelineController.saveEstimate);
 router.get('/my-estimates', authenticateToken, timelineController.getMyEstimates);
 router.get('/contractor/received', authenticateToken, timelineController.getContractorEstimates);

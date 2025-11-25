@@ -1,4 +1,4 @@
-
+// client\src\pages\AuthPage.jsx
 
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";

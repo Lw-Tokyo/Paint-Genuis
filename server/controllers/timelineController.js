@@ -1,6 +1,7 @@
-// server/controllers/timelineController.js
+// server/controllers/timelineController.js (COMPLETE FILE)
 const ProjectEstimate = require('../models/ProjectEstimate');
 const Contractor = require('../models/Contractor');
+const Discount = require('../models/Discount');
 
 // Calculate project timeline
 exports.calculateTimeline = async (req, res) => {
@@ -114,6 +115,296 @@ exports.calculateTimeline = async (req, res) => {
   } catch (error) {
     console.error('❌ Calculate timeline error:', error);
     console.error('Error stack:', error.stack);
+    res.status(500).json({
+      success: false,
+      message: 'Server error calculating timeline',
+      error: error.message
+    });
+  }
+};
+
+// NEW: Calculate timeline with discounts
+exports.calculateTimelineWithDiscounts = async (req, res) => {
+  try {
+    console.log('📊 Calculate timeline with discounts:', req.body);
+
+    const {
+      projectType,
+      numberOfRooms,
+      roomSize,
+      wallCondition,
+      ceilingIncluded,
+      primerNeeded,
+      numberOfCoats,
+      trimWork,
+      accentWalls,
+      texturedWalls,
+      contractorId,
+      startDate,
+      promoCode
+    } = req.body;
+
+    // Validate required fields
+    if (!projectType || !numberOfRooms || !roomSize || !wallCondition || !numberOfCoats || !contractorId || !startDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields'
+      });
+    }
+
+    // Get contractor details
+    const contractor = await Contractor.findById(contractorId);
+    
+    if (!contractor) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contractor not found'
+      });
+    }
+
+    // Prepare data
+    const contractorData = {
+      hoursPerDay: contractor.hoursPerDay || 8,
+      workSpeed: contractor.workSpeed || 40,
+      hourlyRate: contractor.hourlyRate || 50 // Default hourly rate if not set
+    };
+
+    const projectData = {
+      projectType,
+      numberOfRooms: parseInt(numberOfRooms),
+      roomSize: parseInt(roomSize),
+      wallCondition,
+      ceilingIncluded: ceilingIncluded || false,
+      primerNeeded: primerNeeded !== undefined ? primerNeeded : true,
+      numberOfCoats: parseInt(numberOfCoats),
+      trimWork: trimWork || false,
+      accentWalls: accentWalls || false,
+      texturedWalls: texturedWalls || false,
+      startDate: new Date(startDate)
+    };
+
+    // Calculate timeline
+    const timeline = ProjectEstimate.calculateTimeline(projectData, contractorData);
+    
+    // Calculate estimated cost
+    const totalArea = numberOfRooms * roomSize;
+    
+    // Material costs estimation
+    let paintCost = totalArea * numberOfCoats * 0.40; // $0.40 per sq ft per coat
+    if (primerNeeded) paintCost += totalArea * 0.30; // $0.30 per sq ft for primer
+    if (ceilingIncluded) paintCost *= 1.3; // 30% more for ceiling
+    
+    let trimCost = 0;
+    if (trimWork) trimCost = numberOfRooms * 40 * 2; // Estimate 40 linear ft per room at $2/ft
+    
+    const materialCost = Math.round(paintCost + trimCost);
+    const laborCost = Math.round(timeline.totalHours * contractorData.hourlyRate);
+    const totalCost = materialCost + laborCost;
+
+    const estimatedCost = {
+      materialCost,
+      laborCost,
+      totalCost,
+      hourlyRate: contractorData.hourlyRate,
+      totalHours: timeline.totalHours
+    };
+
+    // Calculate discounts
+    const now = new Date();
+    
+    let query = {
+      isActive: true,
+      startDate: { $lte: now },
+      endDate: { $gte: now },
+      $or: [
+        { applicableTo: 'timeline' },
+        { applicableTo: 'all' }
+      ]
+    };
+
+    // Add contractor filter
+    query.$and = [
+      {
+        $or: [
+          { contractorId: contractorId },
+          { contractorId: null }
+        ]
+      }
+    ];
+
+    let discounts = await Discount.find(query).sort({ priority: -1 });
+
+    // If promo code provided, check it
+    if (promoCode) {
+      const promoDiscount = await Discount.findOne({ 
+        code: promoCode.toUpperCase(),
+        isActive: true,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      });
+
+      if (promoDiscount && promoDiscount.isValid() && promoDiscount.canUserUse(req.user.id)) {
+        discounts.unshift(promoDiscount);
+      }
+    }
+
+    // Filter applicable discounts
+    const applicableDiscounts = discounts.filter(discount => {
+      const c = discount.conditions;
+
+      if (c.minRooms && numberOfRooms < c.minRooms) return false;
+      if (c.minArea && totalArea < c.minArea) return false;
+      if (c.minBudget && totalCost < c.minBudget) return false;
+      if (c.projectTypes?.length > 0 && !c.projectTypes.includes(projectType) && !c.projectTypes.includes('both')) return false;
+      if (c.wallConditions?.length > 0 && !c.wallConditions.includes(wallCondition)) return false;
+      if (c.requiresPrimer !== null && c.requiresPrimer !== primerNeeded) return false;
+      if (c.requiresCeiling !== null && c.requiresCeiling !== ceilingIncluded) return false;
+      if (c.minCoats && numberOfCoats < c.minCoats) return false;
+
+      if (!discount.canUserUse(req.user.id)) return false;
+
+      // Check bundle requirements
+      if (discount.type === 'bundle' && discount.bundleItems?.length > 0) {
+        const hasAllRequired = discount.bundleItems
+          .filter(item => item.required)
+          .every(item => {
+            if (item.item === 'primerNeeded') return primerNeeded;
+            if (item.item === 'trimWork') return trimWork;
+            if (item.item === 'ceilingIncluded') return ceilingIncluded;
+            if (item.item === 'accentWalls') return accentWalls;
+            if (item.item === 'texturedWalls') return texturedWalls;
+            return false;
+          });
+        
+        if (!hasAllRequired) return false;
+      }
+
+      return discount.isValid();
+    });
+
+    // Apply discounts
+    let discountResult = {
+      originalAmount: totalCost,
+      totalDiscount: 0,
+      finalAmount: totalCost,
+      discountPercentage: 0,
+      appliedDiscounts: []
+    };
+
+    if (applicableDiscounts.length > 0) {
+      let totalDiscount = 0;
+      const appliedDiscounts = [];
+      let primaryDiscount = null;
+      const stackableDiscounts = [];
+
+      applicableDiscounts.forEach(discount => {
+        if (discount.stackable) {
+          stackableDiscounts.push(discount);
+        } else if (!primaryDiscount) {
+          primaryDiscount = discount;
+        }
+      });
+
+      // Apply primary discount
+      if (primaryDiscount) {
+        let discountAmount = 0;
+
+        if (primaryDiscount.type === 'percentage') {
+          discountAmount = (totalCost * primaryDiscount.value) / 100;
+          if (primaryDiscount.maxDiscount && discountAmount > primaryDiscount.maxDiscount) {
+            discountAmount = primaryDiscount.maxDiscount;
+          }
+        } else if (primaryDiscount.type === 'fixed') {
+          discountAmount = Math.min(primaryDiscount.value, totalCost);
+        } else if (primaryDiscount.type === 'tiered') {
+          const applicableTier = primaryDiscount.tiers
+            ?.filter(tier => numberOfRooms >= tier.minQuantity)
+            .sort((a, b) => b.minQuantity - a.minQuantity)[0];
+          
+          if (applicableTier) {
+            discountAmount = (totalCost * applicableTier.discountValue) / 100;
+          }
+        } else if (primaryDiscount.type === 'bundle') {
+          discountAmount = (totalCost * primaryDiscount.value) / 100;
+        }
+
+        if (discountAmount > 0) {
+          totalDiscount += discountAmount;
+          appliedDiscounts.push({
+            id: primaryDiscount._id,
+            name: primaryDiscount.name,
+            code: primaryDiscount.code,
+            type: primaryDiscount.type,
+            amount: Math.round(discountAmount * 100) / 100,
+            description: primaryDiscount.description
+          });
+        }
+      }
+
+      // Apply stackable discounts
+      let remainingAmount = totalCost - totalDiscount;
+      stackableDiscounts.forEach(discount => {
+        let discountAmount = 0;
+
+        if (discount.type === 'percentage') {
+          discountAmount = (remainingAmount * discount.value) / 100;
+          if (discount.maxDiscount && discountAmount > discount.maxDiscount) {
+            discountAmount = discount.maxDiscount;
+          }
+        } else if (discount.type === 'fixed') {
+          discountAmount = Math.min(discount.value, remainingAmount);
+        }
+
+        if (discountAmount > 0) {
+          totalDiscount += discountAmount;
+          remainingAmount -= discountAmount;
+          appliedDiscounts.push({
+            id: discount._id,
+            name: discount.name,
+            code: discount.code,
+            type: discount.type,
+            amount: Math.round(discountAmount * 100) / 100,
+            description: discount.description
+          });
+        }
+      });
+
+      discountResult = {
+        originalAmount: totalCost,
+        totalDiscount: Math.round(totalDiscount * 100) / 100,
+        finalAmount: Math.round((totalCost - totalDiscount) * 100) / 100,
+        discountPercentage: Math.round((totalDiscount / totalCost) * 100 * 100) / 100,
+        appliedDiscounts
+      };
+
+      // Record discount usage
+      for (const applied of appliedDiscounts) {
+        await Discount.findByIdAndUpdate(applied.id, {
+          $inc: { currentUsageCount: 1 },
+          $push: {
+            usedBy: {
+              userId: req.user.id,
+              projectDetails: projectData,
+              discountAmount: applied.amount
+            }
+          }
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      data: {
+        timeline,
+        estimatedCost,
+        discounts: discountResult,
+        contractorName: contractor.companyName,
+        contractorId: contractor._id
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Calculate with discounts error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error calculating timeline',
