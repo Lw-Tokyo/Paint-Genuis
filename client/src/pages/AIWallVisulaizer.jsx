@@ -329,7 +329,7 @@ const WallPaintVisualizer = () => {
 
       {/* Header */}
       <div style={styles.header}>
-        <h1 style={styles.title}>AI powred Wall Paint Visualizer</h1>
+        <h1 style={styles.title}>AI powered Wall Paint Visualizer</h1>
         <p style={styles.subtitle}>
           Paint instantly • Visualizer Paint on your wall 
         </p>

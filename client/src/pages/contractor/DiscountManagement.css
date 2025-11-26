@@ -1,304 +1,199 @@
-/* client/src/pages/contractor/DiscountManagement.css */
+/* client/src/pages/contractor/DiscountManagement.css - LUXURY PREMIUM DESIGN */
 
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-luxury: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-hover: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+}
+
+/* Container with Background */
 .discount-dashboard-container {
-  padding: 24px;
-  max-width: 1400px;
+  padding: 40px;
+  max-width: 1600px;
   margin: 0 auto;
-  background: #f9fafb;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated Background Particles */
+.discount-dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  animation: particleFloat 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
 }
 
 .discount-loading {
   text-align: center;
-  padding: 60px;
-  font-size: 18px;
-  color: #6b7280;
+  padding: 100px;
+  font-size: 20px;
+  color: white;
+  font-weight: 600;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  animation: pulse 2s ease-in-out infinite;
 }
 
-/* Analytics Grid */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* Analytics Grid - Glassmorphism Cards */
 .discount-analytics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .discount-analytics-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 32px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
+  gap: 20px;
+  box-shadow: var(--shadow-luxury);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer Effect */
+.discount-analytics-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
 }
 
 .discount-analytics-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.discount-analytics-card:nth-child(1) .discount-card-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.discount-analytics-card:nth-child(2) .discount-card-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4);
+}
+
+.discount-analytics-card:nth-child(3) .discount-card-icon {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);
+}
+
+.discount-analytics-card:nth-child(4) .discount-card-icon {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  box-shadow: 0 15px 35px rgba(246, 211, 101, 0.4);
 }
 
 .discount-card-icon {
-  font-size: 36px;
-  width: 60px;
-  height: 60px;
+  font-size: 42px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  border-radius: 12px;
+  border-radius: 20px;
   flex-shrink: 0;
+  position: relative;
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
 }
 
 .discount-card-content {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .discount-card-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 38px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  animation: countUp 1s ease-out;
 }
 
-.discount-card-label {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* Dashboard Header */
-.discount-dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.discount-dashboard-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  color: #1f2937;
-}
-
-.discount-dashboard-header p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.discount-btn-create {
-  padding: 12px 24px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-}
-
-.discount-btn-create:hover {
-  background: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-/* Discounts Table */
-.discount-discounts-table {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.discount-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.discount-table thead {
-  background: #f9fafb;
-}
-
-.discount-table th {
-  text-align: left;
-  padding: 12px 16px;
-  font-weight: 600;
-  font-size: 13px;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.discount-table td {
-  padding: 16px;
-  border-top: 1px solid #f3f4f6;
-  vertical-align: middle;
-}
-
-.discount-discount-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.discount-discount-info strong {
-  color: #1f2937;
-  font-size: 14px;
-}
-
-.discount-code-badge {
-  display: inline-block;
-  font-family: monospace;
-  background: #f3f4f6;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  width: fit-content;
-  color: #6366f1;
-}
-
-.discount-type-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: #eff6ff;
-  color: #1e40af;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.discount-status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.discount-status-badge.active {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.discount-status-badge.inactive {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.discount-action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.discount-btn-icon {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #f3f4f6;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.discount-btn-icon:hover {
-  background: #e5e7eb;
-  transform: scale(1.1);
-}
-
-.discount-btn-icon.discount-btn-danger:hover {
-  background: #fee2e2;
-}
-
-/* Empty State */
-.discount-empty-state {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.discount-empty-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
-}
-
-.discount-empty-state h3 {
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  color: #1f2937;
-}
-
-.discount-empty-state p {
-  color: #6b7280;
-  margin: 0 0 24px 0;
-}
-
-.discount-btn-primary {
-  padding: 12px 24px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-}
-
-.discount-btn-primary:hover {
-  background: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-/* Modal */
-.discount-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.discount-modal-content {
-  background: white;
-  border-radius: 16px;
-  max-width: 700px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-@keyframes slideUp {
+@keyframes countUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -309,13 +204,693 @@
   }
 }
 
+.discount-card-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Dashboard Header - Luxury Style */
+.discount-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 36px 40px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-luxury);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.discount-dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 300% 100%;
+  animation: gradientMove 3s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.discount-dashboard-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.discount-dashboard-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.discount-btn-create {
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 15px;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.discount-btn-create::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.discount-btn-create:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.discount-btn-create:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+}
+
+.discount-btn-create:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Discounts Table - Premium Card Design */
+.discount-discounts-table {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-luxury);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.discount-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.discount-table thead {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  position: relative;
+}
+
+.discount-table thead::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.discount-table th {
+  text-align: left;
+  padding: 18px 24px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.discount-table tbody tr {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.discount-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  transform: scale(1.01);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.discount-table td {
+  padding: 20px 24px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.discount-discount-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.discount-discount-info strong {
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.discount-code-badge {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  width: fit-content;
+  color: #667eea;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.discount-type-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+  box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.discount-status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+.discount-status-badge.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+.discount-status-badge.inactive {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
+.discount-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.discount-btn-icon {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.discount-btn-icon:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateY(-4px) scale(1.1) rotate(5deg);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.discount-btn-icon.discount-btn-danger:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Empty State - Luxury Design */
+.discount-empty-state {
+  text-align: center;
+  padding: 100px 40px;
+  position: relative;
+}
+
+.discount-empty-icon {
+  font-size: 120px;
+  margin-bottom: 24px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
+
+.discount-empty-state h3 {
+  margin: 0 0 16px 0;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.discount-empty-state p {
+  color: #6b7280;
+  margin: 0 0 36px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.discount-btn-primary {
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 15px;
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.discount-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.discount-btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.discount-btn-primary:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 20px 45px rgba(102, 126, 234, 0.5);
+}
+
+/* Modal - Ultra Premium Design */
+.discount-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.discount-modal-content {
+  background: white;
+  border-radius: 32px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Custom Scrollbar */
+.discount-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.discount-modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.discount-modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .discount-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 36px 40px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
 }
+
+.discount-modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: headerShine 3s infinite;
+}
+
+@keyframes headerShine {
+  to {
+    left: 100%;
+  }
+}
+
+.discount-modal-header h3 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.discount-close-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid rgba(239, 68, 68, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.discount-close-btn:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Form - Premium Design */
+.discount-form-container {
+  padding: 40px;
+}
+
+.discount-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.discount-form-group {
+  margin-bottom: 28px;
+}
+
+.discount-form-group label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.discount-form-group input,
+.discount-form-group select,
+.discount-form-group textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #1f2937;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background: rgba(102, 126, 234, 0.02);
+}
+
+.discount-form-group input:focus,
+.discount-form-group select:focus,
+.discount-form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  background: white;
+  transform: translateY(-2px);
+}
+
+.discount-form-group small {
+  display: block;
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.discount-form-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.discount-form-section h4 {
+  margin: 0 0 24px 0;
+  font-size: 18px;
+  color: #1f2937;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.discount-form-section h4::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+.discount-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #374151;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.discount-checkbox-label:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.discount-checkbox-label input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.discount-form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.discount-btn-secondary {
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  font-size: 15px;
+  background: white;
+  color: #667eea;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.5px;
+}
+
+.discount-btn-secondary:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .discount-dashboard-container {
+    padding: 24px;
+  }
+  
+  .discount-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .discount-dashboard-container {
+    padding: 16px;
+  }
+
+  .discount-analytics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .discount-analytics-card {
+    padding: 20px;
+  }
+
+  .discount-card-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 32px;
+  }
+
+  .discount-card-value {
+    font-size: 28px;
+  }
+
+  .discount-dashboard-header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .discount-dashboard-header h2 {
+    font-size: 24px;
+  }
+
+  .discount-btn-create {
+    width: 100%;
+    padding: 14px 24px;
+  }
+
+  .discount-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .discount-table {
+    font-size: 12px;
+  }
+
+  .discount-table th,
+  .discount-table td {
+    padding: 12px 16px;
+  }
+
+  .discount-modal-content {
+    width: 95%;
+    border-radius: 24px;
+  }
 
 .discount-modal-header h3 {
   margin: 0;
@@ -446,7 +1021,7 @@
   background: #f9fafb;
   border-color: #d1d5db;
 }
-
+}
 /* Responsive */
 @media (max-width: 768px) {
   .discount-dashboard-container {
