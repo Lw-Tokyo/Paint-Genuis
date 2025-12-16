@@ -1,3 +1,4 @@
+// server\controllers\discountController.js
 const Discount = require('../models/Discount');
 const Contractor = require('../models/Contractor');
 

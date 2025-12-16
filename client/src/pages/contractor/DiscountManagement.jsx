@@ -1,8 +1,37 @@
 // client/src/pages/contractor/DiscountManagement.jsx
-// Create this file in: client/src/pages/contractor/DiscountManagement.jsx
 
 import React, { useState, useEffect } from 'react';
 import './DiscountManagement.css';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+// ✅ CRITICAL FIX: Helper function to get token from either location
+const getAuthToken = () => {
+  try {
+    // Try getting token from user object first
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user.token) {
+        console.log('✅ Token found in user object');
+        return user.token;
+      }
+    }
+    
+    // Fallback to direct token storage
+    const directToken = localStorage.getItem('token');
+    if (directToken) {
+      console.log('✅ Token found in localStorage');
+      return directToken;
+    }
+    
+    console.error('❌ No token found in either location');
+    return null;
+  } catch (e) {
+    console.error('❌ Error getting token:', e);
+    return null;
+  }
+};
 
 const DiscountManagement = () => {
   const [discounts, setDiscounts] = useState([]);
@@ -38,17 +67,37 @@ const DiscountManagement = () => {
 
   const fetchDiscounts = async () => {
     try {
-      const response = await fetch('/api/discounts/my-discounts', {
+      const token = getAuthToken();
+      
+      if (!token) {
+        console.error('❌ Cannot fetch discounts: No token available');
+        alert('Please login again. Your session may have expired.');
+        return;
+      }
+
+      console.log('📡 Fetching discounts with token:', token.substring(0, 20) + '...');
+
+      const response = await fetch(`${API_URL}/discounts/my-discounts`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
+      
+      console.log('📥 Fetch discounts response:', response.status);
+      
       const data = await response.json();
-      if (data.success) {
+      console.log('📥 Fetch discounts data:', data);
+      
+      if (response.ok && data.success) {
         setDiscounts(data.data);
+      } else {
+        console.error('❌ Fetch failed:', data);
+        if (response.status === 401) {
+          alert('Authentication failed. Please login again.');
+        }
       }
     } catch (error) {
-      console.error('Fetch error:', error);
+      console.error('❌ Fetch error:', error);
     } finally {
       setLoading(false);
     }
@@ -56,55 +105,132 @@ const DiscountManagement = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch('/api/discounts/analytics', {
+      const token = getAuthToken();
+      
+      if (!token) {
+        console.error('❌ Cannot fetch analytics: No token available');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/discounts/analytics`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
+      
       const data = await response.json();
       if (data.success) {
         setAnalytics(data.data);
       }
     } catch (error) {
-      console.error('Analytics error:', error);
+      console.error('❌ Analytics error:', error);
     }
   };
 
   const handleCreateDiscount = async () => {
     try {
-      const response = await fetch('/api/discounts/create', {
+      // Validate required fields
+      if (!formData.name?.trim()) {
+        alert('❌ Please enter a discount name');
+        return;
+      }
+
+      if (!formData.description?.trim()) {
+        alert('❌ Please enter a description');
+        return;
+      }
+
+      if (!formData.endDate) {
+        alert('❌ Please select an end date');
+        return;
+      }
+
+      if (formData.value <= 0) {
+        alert('❌ Discount value must be greater than 0');
+        return;
+      }
+
+      // Validate dates
+      const start = new Date(formData.startDate);
+      const end = new Date(formData.endDate);
+      
+      if (end <= start) {
+        alert('❌ End date must be after start date');
+        return;
+      }
+
+      const token = getAuthToken();
+      
+      if (!token) {
+        alert('❌ Please login again. Your session may have expired.');
+        return;
+      }
+
+      console.log('📤 Sending to:', `${API_URL}/discounts/create`);
+      console.log('📤 Data:', formData);
+      console.log('🔑 Token (first 20 chars):', token.substring(0, 20) + '...');
+
+      const response = await fetch(`${API_URL}/discounts/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
 
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response URL:', response.url);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Server error response:', errorText);
+        
+        if (response.status === 401) {
+          alert('❌ Authentication failed. Please login again.');
+          return;
+        }
+        
+        throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 100)}`);
+      }
+
       const data = await response.json();
+      console.log('📥 Response data:', data);
       
       if (data.success) {
-        alert('Discount created successfully!');
+        alert('✅ Discount created successfully!');
         setShowCreateModal(false);
         fetchDiscounts();
         fetchAnalytics();
         resetForm();
       } else {
-        alert(data.message || 'Failed to create discount');
+        if (data.errors) {
+          const errorMessages = data.errors.map(e => `• ${e.field}: ${e.message}`).join('\n');
+          alert(`❌ Validation Errors:\n${errorMessages}`);
+        } else {
+          alert(`❌ ${data.message || 'Failed to create discount'}`);
+        }
       }
     } catch (error) {
-      console.error('Create error:', error);
-      alert('Failed to create discount');
+      console.error('❌ Create error:', error);
+      alert(`❌ Error: ${error.message}\n\nMake sure:\n1. Server is running on http://localhost:5000\n2. You're logged in as a contractor\n3. You have a contractor profile`);
     }
   };
 
   const handleToggleActive = async (discountId, currentStatus) => {
     try {
-      const response = await fetch(`/api/discounts/${discountId}`, {
+      const token = getAuthToken();
+      
+      if (!token) {
+        alert('Please login again');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/discounts/${discountId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ isActive: !currentStatus })
       });
@@ -114,7 +240,7 @@ const DiscountManagement = () => {
         fetchDiscounts();
       }
     } catch (error) {
-      console.error('Toggle error:', error);
+      console.error('❌ Toggle error:', error);
     }
   };
 
@@ -122,20 +248,27 @@ const DiscountManagement = () => {
     if (!window.confirm('Are you sure you want to delete this discount?')) return;
 
     try {
-      const response = await fetch(`/api/discounts/${discountId}`, {
+      const token = getAuthToken();
+      
+      if (!token) {
+        alert('Please login again');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/discounts/${discountId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       });
 
       const data = await response.json();
       if (data.success) {
-        alert('Discount deleted successfully');
+        alert('✅ Discount deleted successfully');
         fetchDiscounts();
       }
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error('❌ Delete error:', error);
     }
   };
 
@@ -294,7 +427,7 @@ const DiscountManagement = () => {
         )}
       </div>
 
-      {/* Create Modal */}
+      {/* Create Modal - (rest of the JSX remains the same as your original) */}
       {showCreateModal && (
         <div className="discount-modal-overlay" onClick={() => setShowCreateModal(false)}>
           <div className="discount-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -304,6 +437,7 @@ const DiscountManagement = () => {
             </div>
 
             <div className="discount-form-container">
+              {/* Form fields remain the same - I'll include them for completeness */}
               <div className="discount-form-row">
                 <div className="discount-form-group">
                   <label>Discount Name *</label>
