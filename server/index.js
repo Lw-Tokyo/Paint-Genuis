@@ -13,6 +13,8 @@ const contractorRoutes = require("./routes/contractorRoutes");
 const messageRoutes = require("./routes/messageRoutes"); // ✅ added
 const timelineRoutes = require('./routes/timelineRoutes');
 const discountRoutes = require('./routes/discountRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -30,6 +32,8 @@ app.use("/api/contractors", contractorRoutes);
 app.use("/api/messages", messageRoutes); // ✅ added
 app.use('/api/timeline', timelineRoutes);
 app.use('/api/discounts', discountRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // ✅ Root route
 app.get("/", (req, res) => {

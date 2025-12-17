@@ -29,6 +29,8 @@ import MessagesPage from "./pages/messages/MessagesPage";
 import WallPaintVisualizer from "./pages/AIWallVisulaizer"
 import ProjectTimelineEstimator from './components/ProjectTimelineEstimator';
 import DiscountManagement from './pages/contractor/DiscountManagement';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
@@ -77,6 +79,8 @@ function AppContent() {
           <Route path="/wallvisualizer" element={<WallPaintVisualizer />} />
           <Route path="/timeline-estimator" element={<ProjectTimelineEstimator />} />
           <Route path="/contractor/discounts" element={<DiscountManagement />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
 
           {/* Client/Contractor Messaging */}
           <Route path="/messages" element={<MessagesPage />} />

@@ -413,7 +413,7 @@ exports.calculateTimelineWithDiscounts = async (req, res) => {
   }
 };
 
-// Save project estimate
+
 exports.saveEstimate = async (req, res) => {
   try {
     console.log('💾 Save estimate request:', req.body);
@@ -423,7 +423,8 @@ exports.saveEstimate = async (req, res) => {
       projectDetails,
       timeline,
       notes,
-      estimatedCost
+      estimatedCost,
+      discounts
     } = req.body;
 
     // Validate
@@ -444,8 +445,8 @@ exports.saveEstimate = async (req, res) => {
       });
     }
 
-    // Create estimate
-    const estimate = await ProjectEstimate.create({
+    // Prepare estimate data
+    const estimateData = {
       user: req.user.id,
       contractor: contractorId,
       projectDetails,
@@ -453,7 +454,28 @@ exports.saveEstimate = async (req, res) => {
       estimatedCost: estimatedCost || null,
       notes: notes || '',
       status: 'draft'
-    });
+    };
+
+    // Add discounts if provided
+    if (discounts && discounts.appliedDiscounts && discounts.appliedDiscounts.length > 0) {
+      estimateData.discounts = {
+        originalAmount: discounts.originalAmount || 0,
+        totalDiscount: discounts.totalDiscount || 0,
+        finalAmount: discounts.finalAmount || 0,
+        discountPercentage: discounts.discountPercentage || 0,
+        appliedDiscounts: discounts.appliedDiscounts.map(disc => ({
+          discountId: disc.id,
+          name: disc.name,
+          code: disc.code || '',
+          type: disc.type,
+          amount: disc.amount,
+          description: disc.description || ''
+        }))
+      };
+    }
+
+    // Create estimate
+    const estimate = await ProjectEstimate.create(estimateData);
 
     await estimate.populate('contractor', 'companyName email phone rating');
 
@@ -467,6 +489,7 @@ exports.saveEstimate = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Save estimate error:', error);
+    console.error('Error details:', error.message);
     res.status(500).json({
       success: false,
       message: 'Server error saving estimate',

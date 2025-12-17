@@ -1,6 +1,9 @@
-// client\src\components\ProjectTimelineEstimator.jsx
+// client/src/components/ProjectTimelineEstimator.jsx
 import React, { useState, useEffect } from 'react';
 import './ProjectTimelineEstimator.css';
+import DiscountService from '../services/DiscountService';
+import TimelineService from '../services/TimelineService';
+import CartService from '../services/CartService';
 
 const ProjectTimelineEstimator = ({ contractor, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,8 +28,10 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
   const [discounts, setDiscounts] = useState(null);
   const [availableDiscounts, setAvailableDiscounts] = useState([]);
   const [promoError, setPromoError] = useState('');
+  const [validatedPromo, setValidatedPromo] = useState(null);
+  const [savedEstimateId, setSavedEstimateId] = useState(null);
 
-  const totalSteps = 4; // Added discount step
+  const totalSteps = 4;
 
   // Fetch available discounts on mount
   useEffect(() => {
@@ -35,12 +40,7 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
 
   const fetchAvailableDiscounts = async () => {
     try {
-      const response = await fetch('/api/discounts/active', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
+      const data = await DiscountService.getActiveDiscounts('timeline', contractor._id);
       if (data.success) {
         setAvailableDiscounts(data.data);
       }
@@ -67,57 +67,52 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
         texturedWalls: Boolean(formData.texturedWalls),
         contractorId: contractor._id,
         startDate: formData.startDate,
-        promoCode: formData.promoCode
+        promoCode: formData.promoCode || undefined
       };
 
-      // Calculate timeline with discounts
-      const response = await fetch('/api/timeline/calculate-with-discounts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(requestData)
-      });
-
-      const data = await response.json();
+      // Use TimelineService to calculate with discounts
+      const data = await TimelineService.calculateTimeline(requestData);
 
       if (data.success) {
-        setEstimate(data.data.timeline);
-        setDiscounts(data.data.discounts);
+        setEstimate(data.data.timeline || data.data);
+        setDiscounts(data.data.discounts || null);
       } else {
         setError(data.message || 'Failed to calculate timeline');
       }
     } catch (err) {
       console.error('Calculate error:', err);
-      setError('Failed to calculate timeline');
+      setError(err.message || 'Failed to calculate timeline. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const applyPromoCode = async () => {
-    if (!formData.promoCode) return;
+    if (!formData.promoCode) {
+      setPromoError('Please enter a promo code');
+      return;
+    }
     
     setPromoError('');
+    setLoading(true);
+    
     try {
-      const response = await fetch('/api/discounts/validate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ code: formData.promoCode })
-      });
-
-      const data = await response.json();
+      const data = await DiscountService.validatePromoCode(formData.promoCode);
+      
       if (data.success) {
+        setValidatedPromo(data.data);
         alert(`✅ Promo code applied! ${data.data.name}`);
+        setPromoError('');
       } else {
         setPromoError(data.message || 'Invalid promo code');
+        setValidatedPromo(null);
       }
     } catch (err) {
-      setPromoError('Failed to validate promo code');
+      console.error('Promo validation error:', err);
+      setPromoError('Failed to validate promo code. Please try again.');
+      setValidatedPromo(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,6 +130,11 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear promo validation when code changes
+    if (field === 'promoCode') {
+      setValidatedPromo(null);
+      setPromoError('');
+    }
   };
 
   const formatCurrency = (amount) => {
@@ -142,6 +142,73 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
+  };
+
+  const handleSaveEstimate = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const estimateData = {
+        contractorId: contractor._id,
+        projectDetails: {
+          projectType: formData.projectType,
+          numberOfRooms: parseInt(formData.numberOfRooms),
+          roomSize: parseInt(formData.roomSize),
+          wallCondition: formData.wallCondition,
+          ceilingIncluded: formData.ceilingIncluded,
+          primerNeeded: formData.primerNeeded,
+          numberOfCoats: parseInt(formData.numberOfCoats),
+          trimWork: formData.trimWork,
+          accentWalls: formData.accentWalls,
+          texturedWalls: formData.texturedWalls
+        },
+        timeline: estimate,
+        estimatedCost: estimate.estimatedCost || null,
+        discounts: discounts || null,
+        notes: ''
+      };
+
+      const data = await TimelineService.saveEstimate(estimateData);
+
+      if (data.success) {
+        setSavedEstimateId(data.data._id);
+        alert('✅ Estimate saved successfully!');
+      } else {
+        setError(data.message || 'Failed to save estimate');
+      }
+    } catch (err) {
+      console.error('Save estimate error:', err);
+      setError(err.message || 'Failed to save estimate. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!savedEstimateId) {
+      setError('Please save the estimate first');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const data = await CartService.addToCart(savedEstimateId);
+
+      if (data.success) {
+        alert('✅ Added to cart successfully!');
+        onClose();
+      } else {
+        setError(data.message || 'Failed to add to cart');
+      }
+    } catch (err) {
+      console.error('Add to cart error:', err);
+      setError(err.message || 'Failed to add to cart. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -344,12 +411,18 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
                         onChange={(e) => handleInputChange('promoCode', e.target.value.toUpperCase())}
                         placeholder="Enter code"
                         className="promo-input"
+                        disabled={loading}
                       />
-                      <button onClick={applyPromoCode} className="apply-btn">
-                        Apply
+                      <button 
+                        onClick={applyPromoCode} 
+                        className="apply-btn"
+                        disabled={loading || !formData.promoCode}
+                      >
+                        {loading ? 'Checking...' : 'Apply'}
                       </button>
                     </div>
-                    {promoError && <p className="promo-error">{promoError}</p>}
+                    {promoError && <p className="promo-error">❌ {promoError}</p>}
+                    {validatedPromo && <p className="promo-success">✅ Promo code valid: {validatedPromo.name}</p>}
                   </div>
 
                   {/* Available Discounts */}
@@ -391,18 +464,20 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
             {/* Navigation */}
             <div className="modal-nav">
               {currentStep > 1 && (
-                <button onClick={handleBack} className="btn-modal btn-back">
+                <button onClick={handleBack} className="btn-modal btn-back" disabled={loading}>
                   ← Back
                 </button>
               )}
-              <button onClick={handleNext} className="btn-modal btn-next">
-                {currentStep === totalSteps ? 'Calculate Estimate' : 'Continue →'}
+              <button onClick={handleNext} className="btn-modal btn-next" disabled={loading}>
+                {loading ? 'Processing...' : currentStep === totalSteps ? 'Calculate Estimate' : 'Continue →'}
               </button>
             </div>
           </>
         ) : (
           /* Results with Discounts */
           <div className="modal-results">
+            {error && <div className="modal-error">{error}</div>}
+            
             <div className="result-header-modal">
               <div className="success-icon-modal">✓</div>
               <h3>Your Project Estimate</h3>
@@ -417,7 +492,7 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
             </div>
 
             {/* Pricing with Discounts */}
-            {discounts && discounts.appliedDiscounts.length > 0 && (
+            {discounts && discounts.appliedDiscounts && discounts.appliedDiscounts.length > 0 && (
               <div className="discount-results">
                 <div className="price-breakdown">
                   <div className="price-row original">
@@ -449,12 +524,26 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
             )}
 
             <div className="result-actions">
-              <button onClick={onClose} className="btn-modal btn-secondary-result">
+              <button onClick={onClose} className="btn-modal btn-secondary-result" disabled={loading}>
                 Close
               </button>
-              <button className="btn-modal btn-primary-result">
-                Save Estimate
-              </button>
+              {!savedEstimateId ? (
+                <button 
+                  className="btn-modal btn-primary-result"
+                  onClick={handleSaveEstimate}
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Save Estimate'}
+                </button>
+              ) : (
+                <button 
+                  className="btn-modal btn-primary-result"
+                  onClick={handleAddToCart}
+                  disabled={loading}
+                >
+                  {loading ? 'Adding...' : '🛒 Add to Cart'}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -484,6 +573,11 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
           font-weight: 600;
         }
 
+        .promo-input:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
         .apply-btn {
           padding: 12px 24px;
           background: #6366f1;
@@ -492,12 +586,29 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
           border-radius: 8px;
           font-weight: 600;
           cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .apply-btn:hover:not(:disabled) {
+          background: #4f46e5;
+        }
+
+        .apply-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .promo-error {
           color: #ef4444;
           font-size: 13px;
           margin-top: 8px;
+        }
+
+        .promo-success {
+          color: #10b981;
+          font-size: 13px;
+          margin-top: 8px;
+          font-weight: 600;
         }
 
         .available-discounts {
@@ -641,6 +752,14 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
           text-align: center;
           font-weight: 600;
           font-size: 16px;
+        }
+
+        .modal-error {
+          background: #fee2e2;
+          color: #991b1b;
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 16px;
         }
       `}</style>
     </div>
