@@ -1,7 +1,6 @@
-// server/controllers/cartController.js
 const Cart = require('../models/Cart');
 const ProjectEstimate = require('../models/ProjectEstimate');
-
+const Contractor = require('../models/Contractor');
 // Get user's cart
 exports.getCart = async (req, res) => {
   try {
@@ -69,6 +68,43 @@ exports.addToCart = async (req, res) => {
       });
     }
 
+    // Calculate pricing
+    let originalAmount = 0;
+    let discountAmount = 0;
+    let finalAmount = 0;
+    let appliedDiscounts = [];
+
+    // Check if estimate has discounts object
+    if (estimate.discounts && estimate.discounts.finalAmount > 0) {
+      originalAmount = estimate.discounts.originalAmount || 0;
+      discountAmount = estimate.discounts.totalDiscount || 0;
+      finalAmount = estimate.discounts.finalAmount || 0;
+      appliedDiscounts = estimate.discounts.appliedDiscounts?.map(d => ({
+        name: d.name,
+        code: d.code,
+        amount: d.amount
+      })) || [];
+    } 
+    // Fallback to estimatedCost if no discounts
+    else if (estimate.estimatedCost && estimate.estimatedCost.totalCost) {
+      originalAmount = estimate.estimatedCost.totalCost;
+      discountAmount = 0;
+      finalAmount = estimate.estimatedCost.totalCost;
+      appliedDiscounts = [];
+    }
+    // Last fallback - calculate from timeline
+    else {
+      const contractor = await Contractor.findById(estimate.contractor);
+      const hourlyRate = contractor?.hourlyRate || 50;
+      const totalCost = estimate.timeline.totalHours * hourlyRate;
+      originalAmount = totalCost;
+      discountAmount = 0;
+      finalAmount = totalCost;
+      appliedDiscounts = [];
+    }
+
+    console.log('💰 Cart item pricing:', { originalAmount, discountAmount, finalAmount });
+
     // Prepare cart item
     const cartItem = {
       estimate: estimate._id,
@@ -80,14 +116,10 @@ exports.addToCart = async (req, res) => {
         description: `${estimate.projectDetails.projectType} painting - ${estimate.projectDetails.numberOfRooms} rooms`
       },
       pricing: {
-        originalAmount: estimate.discounts?.originalAmount || estimate.estimatedCost?.totalCost || 0,
-        discountAmount: estimate.discounts?.totalDiscount || 0,
-        finalAmount: estimate.discounts?.finalAmount || estimate.estimatedCost?.totalCost || 0,
-        appliedDiscounts: estimate.discounts?.appliedDiscounts?.map(d => ({
-          name: d.name,
-          code: d.code,
-          amount: d.amount
-        })) || []
+        originalAmount,
+        discountAmount,
+        finalAmount,
+        appliedDiscounts
       },
       timeline: {
         totalDays: estimate.timeline.totalDays,

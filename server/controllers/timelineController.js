@@ -472,6 +472,15 @@ exports.saveEstimate = async (req, res) => {
           description: disc.description || ''
         }))
       };
+    } else if (estimatedCost && estimatedCost.totalCost) {
+      // If no discounts but has estimated cost, set it as final amount
+      estimateData.discounts = {
+        originalAmount: estimatedCost.totalCost,
+        totalDiscount: 0,
+        finalAmount: estimatedCost.totalCost,
+        discountPercentage: 0,
+        appliedDiscounts: []
+      };
     }
 
     // Create estimate
@@ -480,6 +489,8 @@ exports.saveEstimate = async (req, res) => {
     await estimate.populate('contractor', 'companyName email phone rating');
 
     console.log('✅ Estimate saved:', estimate._id);
+    console.log('💰 Saved with cost:', estimate.estimatedCost);
+    console.log('💸 Saved with discounts:', estimate.discounts);
 
     res.status(201).json({
       success: true,

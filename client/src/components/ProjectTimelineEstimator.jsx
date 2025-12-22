@@ -163,16 +163,28 @@ const ProjectTimelineEstimator = ({ contractor, onClose }) => {
           accentWalls: formData.accentWalls,
           texturedWalls: formData.texturedWalls
         },
-        timeline: estimate,
+        timeline: {
+          totalHours: estimate.totalHours,
+          totalDays: estimate.totalDays,
+          workingDays: estimate.workingDays,
+          startDate: estimate.startDate,
+          completionDate: estimate.completionDate,
+          phases: estimate.phases,
+          dryingTime: estimate.dryingTime || 0,
+          weatherDelay: estimate.weatherDelay || 0
+        },
         estimatedCost: estimate.estimatedCost || null,
         discounts: discounts || null,
         notes: ''
       };
 
+      console.log('💾 Saving estimate with data:', estimateData);
+
       const data = await TimelineService.saveEstimate(estimateData);
 
       if (data.success) {
         setSavedEstimateId(data.data._id);
+        console.log('✅ Estimate saved successfully:', data.data);
         alert('✅ Estimate saved successfully!');
       } else {
         setError(data.message || 'Failed to save estimate');

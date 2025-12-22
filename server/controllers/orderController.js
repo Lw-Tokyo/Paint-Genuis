@@ -1,4 +1,3 @@
-// server/controllers/orderController.js
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 
