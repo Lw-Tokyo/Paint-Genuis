@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaUserTie, FaFileInvoice, FaClipboardList, FaShoppingCart, FaWallet } from "react-icons/fa";
+import { UserContext } from "../../context/UserContext";
 
-// Mock UserContext for demonstration
-const UserContext = React.createContext({ user: { name: "Alex Johnson" } });
 
-// Mock DashboardLayout component
+
+// Mock DashboardLayout component - Replace with your actual import
 const DashboardLayout = ({ children }) => (
   <div style={{
     minHeight: '100vh',
@@ -147,7 +148,16 @@ const PremiumCard = ({ title, value, icon, onClick, delay = 0 }) => {
 
 function ClientDashboardPage() {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Get user display name with fallback
+  const getUserDisplayName = () => {
+    if (user?.name) return user.name;
+    if (user?.username) return user.username;
+    if (user?.email) return user.email.split('@')[0];
+    return "Client";
+  };
 
   return (
     <DashboardLayout>
@@ -194,7 +204,7 @@ function ClientDashboardPage() {
                 fontWeight: '700',
                 textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
               }}>
-                Welcome, {user?.name || "Client"} 👋
+                Welcome, {getUserDisplayName()} 👋
               </h2>
               <p style={{
                 fontSize: '1rem',
@@ -211,7 +221,7 @@ function ClientDashboardPage() {
               gap: '1rem'
             }}>
               <button
-                onClick={() => window.location.href = "/budget"}
+                onClick={() => navigate("/budget")}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -242,7 +252,7 @@ function ClientDashboardPage() {
               </button>
 
               <button
-                onClick={() => window.location.href = "/cart"}
+                onClick={() => navigate("/cart")}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -386,21 +396,21 @@ function ClientDashboardPage() {
               title="Active Quotes"
               value="3"
               icon={<FaFileInvoice />}
-              onClick={() => window.location.href = "/quotes"}
+              onClick={() => navigate("/quotes")}
               delay={0.3}
             />
             <PremiumCard
               title="Messages"
               value="5"
               icon={<FaEnvelope />}
-              onClick={() => window.location.href = "/messages"}
+              onClick={() => navigate("/messages")}
               delay={0.4}
             />
             <PremiumCard
               title="Hired Contractors"
               value="2"
               icon={<FaUserTie />}
-              onClick={() => window.location.href = "/contractors"}
+              onClick={() => navigate("/contractors")}
               delay={0.5}
             />
           </div>
