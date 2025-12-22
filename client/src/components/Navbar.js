@@ -74,9 +74,6 @@ function Navbar() {
                   {user.role === "client" && (
                     <>
                       <li className="nav-item">
-                        <Link className="nav-link" to="/budget">Budget</Link>
-                      </li>
-                      <li className="nav-item">
                         <Link className="nav-link" to="/client/dashboard">Dashboard</Link>
                       </li>
                     </>

@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaUserTie, FaFileInvoice, FaClipboardList, FaShoppingCart, FaWallet } from "react-icons/fa";
 import { UserContext } from "../../context/UserContext";
-
+import SavedEstimates from '../../components/SavedEstimates';
 
 
 // Mock DashboardLayout component - Replace with your actual import
@@ -415,15 +415,8 @@ function ClientDashboardPage() {
             />
           </div>
         ) : (
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
-            padding: '2rem',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-            animation: 'fadeIn 0.4s ease-out',
-            minHeight: '400px'
+          <div className="estimates-tab-content" style={{
+            animation: 'fadeIn 0.4s ease-out'
           }}>
             <style>{`
               @keyframes fadeIn {
@@ -437,21 +430,7 @@ function ClientDashboardPage() {
                 }
               }
             `}</style>
-            
-            <h3 style={{
-              color: '#fff',
-              fontSize: '1.5rem',
-              marginTop: 0,
-              marginBottom: '1rem'
-            }}>
-              Saved Estimates
-            </h3>
-            <p style={{
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '1rem'
-            }}>
-              Your saved estimates will appear here
-            </p>
+            { <SavedEstimates /> }
           </div>
         )}
       </div>
