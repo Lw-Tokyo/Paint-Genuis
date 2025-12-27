@@ -31,6 +31,7 @@ import ProjectTimelineEstimator from './components/ProjectTimelineEstimator';
 import DiscountManagement from './pages/contractor/DiscountManagement';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
+import OrderDetailsPage from './pages/OrderDetailsPage';
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
@@ -81,6 +82,7 @@ function AppContent() {
           <Route path="/contractor/discounts" element={<DiscountManagement />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
 
           {/* Client/Contractor Messaging */}
           <Route path="/messages" element={<MessagesPage />} />

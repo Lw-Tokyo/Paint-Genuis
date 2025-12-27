@@ -1,3 +1,4 @@
+// server/controllers/orderController.js
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 
@@ -6,10 +7,10 @@ exports.createOrder = async (req, res) => {
   try {
     const { paymentMethod, billingInfo } = req.body;
 
+    console.log('📦 Creating order for user:', req.user.id);
+
     // Get cart
-    const cart = await Cart.findOne({ user: req.user.id })
-      .populate('items.estimate')
-      .populate('items.contractor');
+    const cart = await Cart.findOne({ user: req.user.id });
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({
@@ -18,21 +19,30 @@ exports.createOrder = async (req, res) => {
       });
     }
 
+    console.log('🛒 Cart found with', cart.items.length, 'items');
+
     // Calculate pricing
     const subtotal = cart.finalAmount;
     const tax = subtotal * 0.08; // 8% tax (adjust as needed)
     const total = subtotal + tax;
 
+    console.log('💰 Pricing:', { subtotal, tax, total });
+
+    // Create order items without relying on populated data
+    const orderItems = cart.items.map(item => ({
+      estimate: item.estimate, // Just use the ObjectId
+      contractor: item.contractor, // Just use the ObjectId
+      projectDetails: item.projectDetails,
+      pricing: item.pricing,
+      timeline: item.timeline
+    }));
+
+    console.log('📋 Order items prepared:', orderItems.length);
+
     // Create order
     const order = await Order.create({
       user: req.user.id,
-      items: cart.items.map(item => ({
-        estimate: item.estimate._id,
-        contractor: item.contractor._id,
-        projectDetails: item.projectDetails,
-        pricing: item.pricing,
-        timeline: item.timeline
-      })),
+      items: orderItems,
       payment: {
         method: paymentMethod,
         status: 'pending',
@@ -48,10 +58,15 @@ exports.createOrder = async (req, res) => {
       status: 'pending'
     });
 
-    // Clear cart
+    console.log('✅ Order created:', order._id);
+
+    // Clear cart after successful order creation
     cart.items = [];
     await cart.save();
 
+    console.log('🗑️ Cart cleared');
+
+    // Populate the order before sending response
     await order.populate([
       { path: 'items.contractor', select: 'companyName email phone' },
       { path: 'user', select: 'name email' }
@@ -63,7 +78,8 @@ exports.createOrder = async (req, res) => {
       data: order
     });
   } catch (error) {
-    console.error('Create order error:', error);
+    console.error('❌ Create order error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
       message: 'Failed to create order',

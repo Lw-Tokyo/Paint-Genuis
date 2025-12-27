@@ -1,9 +1,9 @@
+// server/models/Order.js (FIXED VERSION)
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
   orderNumber: {
     type: String,
-    required: true,
     unique: true
   },
   user: {
@@ -102,11 +102,17 @@ const orderSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Generate order number
-orderSchema.pre('save', async function(next) {
-  if (this.isNew) {
-    const count = await mongoose.model('Order').countDocuments();
-    this.orderNumber = `ORD-${Date.now()}-${(count + 1).toString().padStart(5, '0')}`;
+// Generate order number BEFORE validation
+orderSchema.pre('validate', async function(next) {
+  if (this.isNew && !this.orderNumber) {
+    try {
+      const count = await mongoose.model('Order').countDocuments();
+      this.orderNumber = `ORD-${Date.now()}-${(count + 1).toString().padStart(5, '0')}`;
+      console.log('✅ Generated order number:', this.orderNumber);
+    } catch (error) {
+      console.error('❌ Error generating order number:', error);
+      return next(error);
+    }
   }
   next();
 });
