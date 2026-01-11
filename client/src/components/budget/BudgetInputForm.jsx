@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import "./BudgetInputForm.css";
 
@@ -18,36 +17,51 @@ function BudgetInputForm({ onSubmit, initialMin = "", initialMax = "" }) {
   
   return (
     <div className="budget-input-form-container">
-      <form onSubmit={handleSubmit} className="budget-form shadow p-4 rounded">
-        <h4 className="text-center mb-4">Set Your Budget</h4>
-        <div className="mb-3">
-          <label className="form-label">Minimum Budget (PKR)</label>
-          <input
-            type="number"
-            className="form-control"
-            value={min}
-            onChange={(e) => setMin(e.target.value)}
-            placeholder="Enter minimum budget"
-            min="0"
-            step="1"
-            required
-          />
+      <div className="budget-input-form-wrapper">
+        <div className="budget-input-form-inner">
+          <div className="budget-input-group">
+            <label className="budget-input-label">
+              <span className="budget-input-label-icon">💵</span>
+              Minimum Budget (PKR)
+            </label>
+            <input
+              type="number"
+              className="budget-input-field"
+              value={min}
+              onChange={(e) => setMin(e.target.value)}
+              placeholder="Enter minimum budget"
+              min="0"
+              step="1"
+              required
+            />
+          </div>
+
+          <div className="budget-input-group">
+            <label className="budget-input-label">
+              <span className="budget-input-label-icon">💰</span>
+              Maximum Budget (PKR)
+            </label>
+            <input
+              type="number"
+              className="budget-input-field"
+              value={max}
+              onChange={(e) => setMax(e.target.value)}
+              placeholder="Enter maximum budget"
+              min="0"
+              step="1"
+              required
+            />
+          </div>
+
+          <button 
+            onClick={handleSubmit} 
+            className="budget-input-submit-button"
+          >
+            <span className="budget-input-button-icon">✨</span>
+            Set Budget
+          </button>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Maximum Budget (PKR)</label>
-          <input
-            type="number"
-            className="form-control"
-            value={max}
-            onChange={(e) => setMax(e.target.value)}
-            placeholder="Enter maximum budget"
-            min="0"
-            step="1"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Set Budget</button>
-      </form>
+      </div>
     </div>
   );
 }

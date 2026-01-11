@@ -1,6 +1,7 @@
 // server/controllers/cartController.js
 const Cart = require('../models/Cart');
 const ProjectEstimate = require('../models/ProjectEstimate');
+const Contractor = require('../models/Contractor'); // ✅ ADD THIS LINE
 
 // Get user's cart
 exports.getCart = async (req, res) => {

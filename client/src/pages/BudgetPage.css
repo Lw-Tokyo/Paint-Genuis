@@ -1,46 +1,408 @@
-.budget-page-container {
-  padding: 2rem;
-  background-color: #f8f9fa;
+/* Premium Budget Page Styling */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* Main wrapper with gradient background - Full width and height */
+.budget-page-wrapper {
   min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-attachment: fixed;
+  padding: 2rem 0 4rem 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: -3rem 0 -4.5rem 0 !important;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
 }
 
-.budget-page-container h2 {
+.budget-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.budget-page-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.budget-page-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.budget-page-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  font-weight: 400;
+}
+
+.budget-gradient-text {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Controls */
+.budget-controls-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.budget-primary-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 2rem;
+  color: white;
+  font-size: 1rem;
   font-weight: 600;
-  color: #343a40;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.budget-section,
-.room-dimensions-section {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.budget-secondary-button {
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 2rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budget-button-icon {
+  font-size: 1.2rem;
+}
+
+.budget-primary-button:hover,
+.budget-secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+}
+
+/* Glass Cards */
+.budget-glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   margin-bottom: 2rem;
 }
 
-.budget-section h4,
-.room-dimensions-section h4 {
-  font-weight: 500;
-  color: #495057;
+/* Settings Grid */
+.budget-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
-.budget-section:hover,
-.room-dimensions-section:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.budget-settings-section {
+  position: relative;
 }
 
-.budget-page-container {
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  margin: 20px auto;
-  max-width: 800px;
+.budget-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-.history-section {
-  margin-top: 30px;
+.budget-section-icon {
+  font-size: 2rem;
+  animation: budget-float 3s ease-in-out infinite;
 }
 
-.text-center {
+.budget-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* Budget Info */
+.budget-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.budget-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.budget-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.budget-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.budget-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Dimensions Grid */
+.budget-dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.budget-dimension-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
+  transition: all 0.3s ease;
+}
+
+.budget-dimension-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.budget-dimension-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.budget-dimension-value {
+  display: block;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.budget-area-value {
+  font-weight: 800 !important;
+}
+
+/* Form Headers */
+.budget-form-header,
+.budget-history-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.budget-form-icon,
+.budget-history-icon {
+  font-size: 2.5rem;
+  animation: budget-float 3s ease-in-out infinite;
+}
+
+.budget-form-title,
+.budget-history-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* History Section */
+.budget-history-section {
+  margin-top: 2rem;
+}
+
+/* Loading States */
+.budget-loading-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  max-width: 400px;
+  margin: 10rem auto;
+}
+
+.budget-loading-spinner {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.5rem;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: budget-spin 1s linear infinite;
+}
+
+.budget-loading-text {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Animations */
+@keyframes budget-slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes budget-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes budget-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes budget-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation Classes */
+.budget-slide-in-down {
+  animation: budget-slide-in-down 0.6s ease-out;
+}
+
+.budget-slide-in-up {
+  animation: budget-slide-in-up 0.6s ease-out;
+}
+
+.budget-slide-in-up-delay-1 {
+  animation: budget-slide-in-up 0.6s ease-out 0.1s both;
+}
+
+.budget-slide-in-up-delay-2 {
+  animation: budget-slide-in-up 0.6s ease-out 0.2s both;
+}
+
+.budget-slide-in-up-delay-3 {
+  animation: budget-slide-in-up 0.6s ease-out 0.3s both;
+}
+
+.budget-slide-in-up-delay-4 {
+  animation: budget-slide-in-up 0.6s ease-out 0.4s both;
+}
+
+.budget-slide-in-up-delay-5 {
+  animation: budget-slide-in-up 0.6s ease-out 0.5s both;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .budget-content {
+    padding: 0 1rem;
+  }
+  
+  .budget-page-title {
+    font-size: 2rem;
+  }
+  
+  .budget-controls-container {
+    flex-direction: column;
+  }
+  
+  .budget-settings-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .budget-dimensions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .budget-glass-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .budget-page-wrapper {
+    padding: 1rem 0 3rem 0;
+    margin: -1rem 0 -3rem 0 !important;
+  }
+  
+  .budget-page-title {
+    font-size: 1.75rem;
+  }
+  
+  .budget-form-title,
+  .budget-history-title {
+    font-size: 1.5rem;
+  }
+  
+  .budget-section-title {
+    font-size: 1.25rem;
+  }
 }

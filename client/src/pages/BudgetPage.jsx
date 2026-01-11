@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import BudgetInputForm from "../components/budget/BudgetInputForm";
@@ -41,12 +40,10 @@ function BudgetPage() {
           setRecommendations(recommendations || []);
           setCoats(coats);
         } else {
-    
           setBudget({ min: 0, max: 0, history: [] });
           setShowBudgetForm(true);
         }
       } catch (err) {
-       
         if (err.response && err.response.status === 404) {
           setBudget({ min: 0, max: 0, history: [] });
           setShowBudgetForm(true);
@@ -92,7 +89,6 @@ function BudgetPage() {
         setCoats(res.data.coats);
       }
       
-    
       setShowBudgetForm(false);
       setShowDimensionsForm(false);
     } catch (err) {
@@ -130,93 +126,182 @@ function BudgetPage() {
 
   const isOverBudget = estimate > (budget?.max || 0);
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="budget-page-wrapper">
+        <div className="budget-content">
+          <div className="budget-loading-card budget-slide-in-up">
+            <div className="budget-loading-spinner"></div>
+            <p className="budget-loading-text">Loading your budget...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
-  if (!budget) return <div className="text-center mt-5">Initializing budget...</div>;
+  if (!budget) {
+    return (
+      <div className="budget-page-wrapper">
+        <div className="budget-content">
+          <div className="budget-loading-card budget-slide-in-up">
+            <p className="budget-loading-text">Initializing budget...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const hasBudget = budget?.min > 0 && budget?.max > 0;
 
   return (
-    <div className="budget-page-container">
-      <h2 className="mb-4 text-center">Manage Your Painting Budget</h2>
+    <div className="budget-page-wrapper">
+      <div className="budget-content">
+        {/* Page Header */}
+        <header className="budget-page-header budget-slide-in-down">
+          <h1 className="budget-page-title">
+            <span className="budget-gradient-text">💰 Budget Management</span>
+          </h1>
+          <p className="budget-page-subtitle">Plan and track your painting project budget</p>
+        </header>
 
-      {}
-      {hasBudget && (
-        <div className="budget-controls d-flex justify-content-center mb-4">
-          <button 
-            className="btn btn-outline-primary me-3"
-            onClick={handleChangeBudget}
-          >
-            Change Budget
-          </button>
-          <button 
-            className="btn btn-outline-primary"
-            onClick={handleChangeDimensions}
-          >
-            Change Dimensions
-          </button>
-        </div>
-      )}
-
-      {}
-      {hasBudget && !showBudgetForm && !showDimensionsForm && (
-        <div className="current-settings p-3 mb-4 bg-light rounded">
-          <div className="row">
-            <div className="col-md-6">
-              <h5>Current Budget</h5>
-              <p>Minimum: {budget.min} PKR</p>
-              <p>Maximum: {budget.max} PKR</p>
-            </div>
-            {roomDimensions && (
-              <div className="col-md-6">
-                <h5>Current Dimensions</h5>
-                <p>Length: {roomDimensions.length} ft</p>
-                <p>Width: {roomDimensions.width} ft</p>
-                <p>Height: {roomDimensions.height} ft</p>
-                <p>Area: {roomDimensions.length * roomDimensions.width} sq ft</p>
-                <p>Number of Coats: {coats}</p>
-              </div>
-            )}
+        {/* Budget Controls */}
+        {hasBudget && (
+          <div className="budget-controls-container budget-slide-in-up-delay-1">
+            <button 
+              className="budget-primary-button"
+              onClick={handleChangeBudget}
+            >
+              <span className="budget-button-icon">📊</span>
+              Change Budget
+            </button>
+            <button 
+              className="budget-secondary-button"
+              onClick={handleChangeDimensions}
+            >
+              <span className="budget-button-icon">📐</span>
+              Change Dimensions
+            </button>
           </div>
+        )}
+
+        {/* Current Settings Display */}
+        {hasBudget && !showBudgetForm && !showDimensionsForm && (
+          <div className="budget-glass-card budget-slide-in-up-delay-2">
+            <div className="budget-settings-grid">
+              <div className="budget-settings-section">
+                <div className="budget-section-header">
+                  <span className="budget-section-icon">💵</span>
+                  <h3 className="budget-section-title">Current Budget</h3>
+                </div>
+                <div className="budget-info">
+                  <div className="budget-item">
+                    <span className="budget-label">Minimum</span>
+                    <span className="budget-value budget-gradient-text">
+                      {budget.min.toLocaleString()} PKR
+                    </span>
+                  </div>
+                  <div className="budget-item">
+                    <span className="budget-label">Maximum</span>
+                    <span className="budget-value budget-gradient-text">
+                      {budget.max.toLocaleString()} PKR
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              {roomDimensions && (
+                <div className="budget-settings-section">
+                  <div className="budget-section-header">
+                    <span className="budget-section-icon">📏</span>
+                    <h3 className="budget-section-title">Current Dimensions</h3>
+                  </div>
+                  <div className="budget-dimensions-grid">
+                    <div className="budget-dimension-item">
+                      <span className="budget-dimension-label">Length</span>
+                      <span className="budget-dimension-value">{roomDimensions.length} ft</span>
+                    </div>
+                    <div className="budget-dimension-item">
+                      <span className="budget-dimension-label">Width</span>
+                      <span className="budget-dimension-value">{roomDimensions.width} ft</span>
+                    </div>
+                    <div className="budget-dimension-item">
+                      <span className="budget-dimension-label">Height</span>
+                      <span className="budget-dimension-value">{roomDimensions.height} ft</span>
+                    </div>
+                    <div className="budget-dimension-item">
+                      <span className="budget-dimension-label">Area</span>
+                      <span className="budget-dimension-value budget-gradient-text budget-area-value">
+                        {roomDimensions.length * roomDimensions.width} sq ft
+                      </span>
+                    </div>
+                    <div className="budget-dimension-item">
+                      <span className="budget-dimension-label">Coats</span>
+                      <span className="budget-dimension-value">{coats}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Budget Form */}
+        {(!hasBudget || showBudgetForm) && (
+          <div className="budget-glass-card budget-slide-in-up-delay-3">
+            <div className="budget-form-header">
+              <span className="budget-form-icon">💰</span>
+              <h2 className="budget-form-title">
+                <span className="budget-gradient-text">Set Your Budget</span>
+              </h2>
+            </div>
+            <BudgetInputForm 
+              onSubmit={handleBudgetSubmit} 
+              initialMin={hasBudget ? budget.min : ""} 
+              initialMax={hasBudget ? budget.max : ""} 
+            />
+          </div>
+        )}
+
+        {/* Dimensions Form */}
+        {hasBudget && !showBudgetForm && (!roomDimensions || showDimensionsForm) && (
+          <div className="budget-glass-card budget-slide-in-up-delay-3">
+            <div className="budget-form-header">
+              <span className="budget-form-icon">📐</span>
+              <h2 className="budget-form-title">
+                <span className="budget-gradient-text">Enter Room Dimensions</span>
+              </h2>
+            </div>
+            <RoomDimensionsForm 
+              onSubmit={handleRoomDimensionsSubmit} 
+              initialDimensions={roomDimensions ? {
+                length: roomDimensions.length,
+                width: roomDimensions.width,
+                height: roomDimensions.height
+              } : null}
+              initialCoats={coats}
+            />
+          </div>
+        )}
+
+        {/* Budget Analysis */}
+        {roomDimensions && !showBudgetForm && !showDimensionsForm && (
+          <div className="budget-slide-in-up-delay-4">
+            <BudgetAlert estimate={estimate} budget={budget} isOver={isOverBudget} />
+            <BudgetRecommendations recommendations={recommendations} />
+            <BudgetComparisonTable budget={budget} recommendations={recommendations} />
+          </div>
+        )}
+
+        {/* Budget History */}
+        <div className="budget-glass-card budget-history-section budget-slide-in-up-delay-5">
+          <div className="budget-history-header">
+            <span className="budget-history-icon">📜</span>
+            <h2 className="budget-history-title">
+              <span className="budget-gradient-text">Budget History</span>
+            </h2>
+          </div>
+          <BudgetHistory history={budget.history} onDelete={handleHistoryDelete} />
         </div>
-      )}
-
-      {}
-      {(!hasBudget || showBudgetForm) && (
-        <div className="budget-section">
-          <h4 className="text-center mb-3">Set Your Budget</h4>
-          <BudgetInputForm onSubmit={handleBudgetSubmit} initialMin={hasBudget ? budget.min : ""} initialMax={hasBudget ? budget.max : ""} />
-        </div>
-      )}
-
-      {hasBudget && !showBudgetForm && (!roomDimensions || showDimensionsForm) && (
-        <div className="room-dimensions-section">
-          <h4 className="text-center mb-3">Enter Room Dimensions</h4>
-          <RoomDimensionsForm 
-            onSubmit={handleRoomDimensionsSubmit} 
-            initialDimensions={roomDimensions ? {
-              length: roomDimensions.length,
-              width: roomDimensions.width,
-              height: roomDimensions.height
-            } : null}
-            initialCoats={coats}
-          />
-        </div>
-      )}
-
-      {}
-      {roomDimensions && !showBudgetForm && !showDimensionsForm && (
-        <>
-          <BudgetAlert estimate={estimate} budget={budget} isOver={isOverBudget} />
-          <BudgetRecommendations recommendations={recommendations} />
-          <BudgetComparisonTable budget={budget} recommendations={recommendations} />
-        </>
-      )}
-
-      {}
-      <div className="history-section">
-        <h4 className="text-center mt-4">Your Budget History</h4>
-        <BudgetHistory history={budget.history} onDelete={handleHistoryDelete} />
       </div>
     </div>
   );

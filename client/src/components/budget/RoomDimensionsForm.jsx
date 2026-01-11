@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import "./RoomDimensionsForm.css";
 
@@ -10,7 +9,6 @@ function RoomDimensionsForm({ onSubmit, initialDimensions = null, initialCoats =
   });
   
   const [coats, setCoats] = useState(initialCoats);
-  
 
   useEffect(() => {
     if (initialDimensions) {
@@ -46,70 +44,93 @@ function RoomDimensionsForm({ onSubmit, initialDimensions = null, initialCoats =
 
   return (
     <div className="room-dimensions-form-container">
-      <form onSubmit={handleSubmit} className="room-form shadow p-4 rounded">
-        <h4 className="text-center mb-4">Enter Room Dimensions</h4>
-        <div className="mb-3">
-          <label className="form-label">Length (ft)</label>
-          <input
-            type="number"
-            name="length"
-            className="form-control"
-            value={dimensions.length}
-            onChange={handleChange}
-            placeholder="Enter length"
-            min="0.01"
-            step="0.01"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Width (ft)</label>
-          <input
-            type="number"
-            name="width"
-            className="form-control"
-            value={dimensions.width}
-            onChange={handleChange}
-            placeholder="Enter width"
-            min="0.01"
-            step="0.01"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Height (ft)</label>
-          <input
-            type="number"
-            name="height"
-            className="form-control"
-            value={dimensions.height}
-            onChange={handleChange}
-            placeholder="Enter height"
-            min="0.01"
-            step="0.01"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Number of Coats</label>
-          <select
-            name="coats"
-            className="form-select"
-            value={coats}
-            onChange={handleCoatsChange}
-            required
-          >
-            <option value="1">1 coat</option>
-            <option value="2">2 coats</option>
-            <option value="3">3 coats (recommended)</option>
-            <option value="4">4 coats</option>
-          </select>
-          <div className="form-text">
-            More coats provide better coverage but increase cost.
+      <div className="room-form-wrapper">
+        <div className="room-form-inner">
+          <div className="room-input-group">
+            <label className="room-label">
+              <span className="room-label-icon">📏</span>
+              Length (ft)
+            </label>
+            <input
+              type="number"
+              name="length"
+              className="room-input"
+              value={dimensions.length}
+              onChange={handleChange}
+              placeholder="Enter length"
+              min="0.01"
+              step="0.01"
+              required
+            />
           </div>
+
+          <div className="room-input-group">
+            <label className="room-label">
+              <span className="room-label-icon">↔️</span>
+              Width (ft)
+            </label>
+            <input
+              type="number"
+              name="width"
+              className="room-input"
+              value={dimensions.width}
+              onChange={handleChange}
+              placeholder="Enter width"
+              min="0.01"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div className="room-input-group">
+            <label className="room-label">
+              <span className="room-label-icon">⬆️</span>
+              Height (ft)
+            </label>
+            <input
+              type="number"
+              name="height"
+              className="room-input"
+              value={dimensions.height}
+              onChange={handleChange}
+              placeholder="Enter height"
+              min="0.01"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div className="room-input-group">
+            <label className="room-label">
+              <span className="room-label-icon">🎨</span>
+              Number of Coats
+            </label>
+            <select
+              name="coats"
+              className="room-select"
+              value={coats}
+              onChange={handleCoatsChange}
+              required
+            >
+              <option value="1">1 coat</option>
+              <option value="2">2 coats</option>
+              <option value="3">3 coats (recommended)</option>
+              <option value="4">4 coats</option>
+            </select>
+            <div className="room-help-text">
+              💡 More coats provide better coverage but increase cost
+            </div>
+          </div>
+
+          <button 
+            onClick={handleSubmit} 
+            className="room-submit-button"
+          >
+            <span className="room-button-icon">🧮</span>
+            Calculate Estimate
+          </button>
         </div>
-        <button type="submit" className="btn btn-primary w-100">Calculate Estimate</button>
-      </form>
+      </div>
     </div>
   );
 }

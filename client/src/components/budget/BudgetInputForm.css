@@ -1,40 +1,292 @@
+/* Premium Budget Input Form Styling */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
 .budget-input-form-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
-}
-
-.budget-form {
   width: 100%;
-  max-width: 500px;
-  background-color: #f8f9fa;
-  transition: transform 0.3s, box-shadow 0.3s;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.budget-form:hover {
-  transform: scale(1.02);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+.budget-input-form-wrapper {
+  width: 100%;
+  max-width: 600px;
+  animation: budget-input-slide-in-up 0.6s ease-out;
 }
 
-.budget-form .form-label {
-  font-weight: 500;
-  color: #495057;
+.budget-input-form-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.budget-form .form-control {
-  border-radius: 0.5rem;
-  border: 1px solid #ced4da;
-  padding: 0.75rem;
+/* Input Groups */
+.budget-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: budget-input-fade-in 0.5s ease-out;
 }
 
-.budget-form .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  padding: 0.75rem;
+.budget-input-group:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.budget-input-group:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+/* Labels */
+.budget-input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
-.budget-form .btn-primary:hover {
-  background-color: #0056b3;
+.budget-input-label-icon {
+  font-size: 1.5rem;
+  animation: budget-input-float 3s ease-in-out infinite;
+}
+
+/* Input Fields */
+.budget-input-field {
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  font-size: 1.1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+  font-weight: 500;
+}
+
+.budget-input-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.budget-input-field:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.budget-input-field:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Submit Button */
+.budget-input-submit-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 1.25rem 2rem;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.budget-input-submit-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.budget-input-submit-button:hover::before {
+  left: 100%;
+}
+
+.budget-input-submit-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+}
+
+.budget-input-submit-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+}
+
+.budget-input-button-icon {
+  font-size: 1.5rem;
+  animation: budget-input-pulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes budget-input-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes budget-input-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes budget-input-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes budget-input-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Number Input Styling */
+.budget-input-field[type="number"]::-webkit-inner-spin-button,
+.budget-input-field[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
+  height: 40px;
+}
+
+/* Disabled State */
+.budget-input-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.budget-input-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.budget-input-submit-button:disabled:hover {
+  transform: none;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* Focus Visible for Accessibility */
+.budget-input-field:focus-visible,
+.budget-input-submit-button:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .budget-input-form-inner {
+    gap: 1.25rem;
+  }
+
+  .budget-input-field {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+
+  .budget-input-submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .budget-input-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .budget-input-field {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+
+  .budget-input-submit-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+
+  .budget-input-label-icon {
+    font-size: 1.3rem;
+  }
+
+  .budget-input-button-icon {
+    font-size: 1.3rem;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .budget-input-field {
+    border-width: 3px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .budget-input-form-wrapper,
+  .budget-input-group,
+  .budget-input-label-icon,
+  .budget-input-button-icon {
+    animation: none;
+  }
+
+  .budget-input-field:focus,
+  .budget-input-submit-button:hover {
+    transform: none;
+  }
+}
+
+/* Invalid Input State */
+.budget-input-field:invalid:not(:placeholder-shown) {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.budget-input-field:invalid:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+/* Valid Input State */
+.budget-input-field:valid:not(:placeholder-shown) {
+  border-color: rgba(16, 185, 129, 0.5);
 }

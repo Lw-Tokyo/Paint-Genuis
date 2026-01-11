@@ -10,7 +10,8 @@ import ContactPage from "./pages/ContactPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CostEstimatorPage from "./pages/CostEstimatorPage";
-import BudgetPage from "./pages/BudgetPage";
+import BudgetPage 
+from "./pages/BudgetPage";
 import WallColorVisualizer from "./components/WallColorVisualizer";
 import { UserProvider } from "./context/UserContext"; 
 import PaintCoverageCalculator from "./components/PaintCoverageCalculator";
@@ -41,14 +42,16 @@ function AppContent() {
 
   const backgroundImages = {
     "/": "url('/home-bg.jpg')",
-    "/estimate": "url('/4.jpg')",
-    "/coverage-calculator": "url('/4.jpg')",
+//    "/estimate": "url('/4.jpg')",
+//    "/coverage-calculator": "url('/4.jpg')",
     "/WallColorVisualizer": "url('/4.jpg')",
-    "/budget": "url('/5.jpg')",
+//    "/budget": "url('/5.jpg')",
     "/forgot-password": "url('/3.jpg')",
     "/reset-password/:token": "3.jpg')",
-    "/about": "url('/1.jpg')",
-    "/contact": "url('/5.jpg')",
+
+
+//    "/about": "url('/1.jpg')",
+//    "/contact": "url('/5.jpg')",
     "/auth": "url('/3.JPG')"
   };
 

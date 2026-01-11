@@ -65,109 +65,178 @@ function CostEstimatorPage() {
     }
   }, [showSuccess]);
 
+  const getPaintTypeIcon = (type) => {
+    switch(type) {
+      case 'standard': return '✨';
+      case 'premium': return '⭐';
+      case 'luxury': return '👑';
+      default: return '🎨';
+    }
+  };
+
   return (
-    <div className="cost-container">
-      <h2 className="cost-title">Paint Cost Estimator</h2>
-      
-      <form onSubmit={handleSubmit} className="cost-form">
-        <div className="form-group">
-          <label htmlFor="length" className="form-label">Room Length (ft)</label>
-          <input
-            type="number"
-            min="0"
-            className="form-input"
-            id="length"
-            name="length"
-            value={formData.length}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="width" className="form-label">Room Width (ft)</label>
-          <input
-            type="number"
-            min="0"
-            className="form-input"
-            id="width"
-            name="width"
-            value={formData.width}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="height" className="form-label">Room Height (ft)</label>
-          <input
-            type="number"
-            min="0"
-            className="form-input"
-            id="height"
-            name="height"
-            value={formData.height}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="paintType" className="form-label">Paint Type</label>
-          <select
-            className="form-select"
-            id="paintType"
-            name="paintType"
-            value={formData.paintType}
-            onChange={handleChange}
-          >
-            <option value="standard">Standard</option>
-            <option value="premium">Premium</option>
-            <option value="luxury">Luxury</option>
-          </select>
+    <div className="cost-estimator-wrapper">
+      <div className="cost-estimator-content">
+        {/* Page Header */}
+        <header className="cost-estimator-header cost-slide-in-down">
+          <span className="cost-header-icon">🧮</span>
+          <h1 className="cost-page-title">
+            <span className="cost-gradient-text">Paint Cost Estimator</span>
+          </h1>
+          <p className="cost-page-subtitle">Get an instant estimate for your painting project</p>
+        </header>
+
+        {/* Estimator Card */}
+        <div className="cost-glass-card cost-slide-in-up">
+          <form onSubmit={handleSubmit} className="cost-form">
+            <div className="cost-input-group">
+              <label htmlFor="length" className="cost-label">
+                <span className="cost-label-icon">📏</span>
+                Room Length (ft)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="cost-input"
+                id="length"
+                name="length"
+                value={formData.length}
+                onChange={handleChange}
+                placeholder="Enter length"
+                required
+              />
+            </div>
+            
+            <div className="cost-input-group">
+              <label htmlFor="width" className="cost-label">
+                <span className="cost-label-icon">↔️</span>
+                Room Width (ft)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="cost-input"
+                id="width"
+                name="width"
+                value={formData.width}
+                onChange={handleChange}
+                placeholder="Enter width"
+                required
+              />
+            </div>
+            
+            <div className="cost-input-group">
+              <label htmlFor="height" className="cost-label">
+                <span className="cost-label-icon">⬆️</span>
+                Room Height (ft)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                className="cost-input"
+                id="height"
+                name="height"
+                value={formData.height}
+                onChange={handleChange}
+                placeholder="Enter height"
+                required
+              />
+            </div>
+            
+            <div className="cost-input-group">
+              <label htmlFor="paintType" className="cost-label">
+                <span className="cost-label-icon">{getPaintTypeIcon(formData.paintType)}</span>
+                Paint Type
+              </label>
+              <select
+                className="cost-select"
+                id="paintType"
+                name="paintType"
+                value={formData.paintType}
+                onChange={handleChange}
+              >
+                <option value="standard">✨ Standard</option>
+                <option value="premium">⭐ Premium</option>
+                <option value="luxury">👑 Luxury</option>
+              </select>
+            </div>
+
+            <div className="cost-input-group">
+              <label htmlFor="coats" className="cost-label">
+                <span className="cost-label-icon">🎨</span>
+                Number of Coats
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                className="cost-input"
+                id="coats"
+                name="coats"
+                value={formData.coats}
+                onChange={handleChange}
+                placeholder="Enter number of coats"
+                required
+              />
+            </div>
+
+            <button type="submit" className="cost-submit-button" disabled={loading}>
+              <span className="cost-button-icon">🧮</span>
+              {loading ? "Calculating..." : "Calculate Estimate"}
+            </button>
+          </form>
+
+          {showSkeleton && (
+            <div className="cost-skeleton-container">
+              <div className="cost-skeleton-item"></div>
+              <div className="cost-skeleton-item cost-skeleton-small"></div>
+              <div className="cost-skeleton-item cost-skeleton-small"></div>
+            </div>
+          )}
+
+          {estimate !== null && showSuccess && (
+            <div className="cost-result-container cost-fade-in">
+              <div className="cost-result-icon">💰</div>
+              <h3 className="cost-result-title">Your Estimated Cost</h3>
+              <div className="cost-result-amount cost-gradient-text">
+                {estimate.toLocaleString()} PKR
+              </div>
+              <p className="cost-result-subtitle">This is an estimated cost based on your inputs</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="cost-error-container cost-fade-in">
+              <div className="cost-error-icon">❌</div>
+              <p className="cost-error-text">{error}</p>
+            </div>
+          )}
         </div>
 
-        <div className="form-group">
-          <label htmlFor="coats" className="form-label">Number of Coats</label>
-          <input
-            type="number"
-            min="1"
-            className="form-input"
-            id="coats"
-            name="coats"
-            value={formData.coats}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className="estimate-btn" disabled={loading}>
-          {loading ? "Calculating..." : "Calculate Estimate"}
-        </button>
-      </form>
-
-      {showSkeleton && (
-        <div className="skeleton-container">
-          <Skeleton height={50} count={1} className="skeleton mb-2" />
-          <Skeleton height={30} count={2} className="skeleton" />
-        </div>
-      )}
-
-      {estimate !== null && showSuccess && (
-        <div className="result-container">
-          <div className="estimate-result">
-            Your estimated painting cost is <span className="highlight">{estimate} PKR</span>
+        {/* Info Cards */}
+        <div className="cost-info-grid cost-slide-in-up-delay">
+          <div className="cost-info-card">
+            <span className="cost-info-icon">📊</span>
+            <h4 className="cost-info-title">Accurate Estimates</h4>
+            <p className="cost-info-text">Get precise cost calculations based on room dimensions and paint quality</p>
+          </div>
+          
+          <div className="cost-info-card">
+            <span className="cost-info-icon">⚡</span>
+            <h4 className="cost-info-title">Instant Results</h4>
+            <p className="cost-info-text">Receive your estimate immediately with detailed breakdowns</p>
+          </div>
+          
+          <div className="cost-info-card">
+            <span className="cost-info-icon">💎</span>
+            <h4 className="cost-info-title">Multiple Options</h4>
+            <p className="cost-info-text">Choose from standard, premium, or luxury paint types</p>
           </div>
         </div>
-      )}
-
-      {error && (
-        <div className="result-container">
-          <div className="estimate-result error-message">
-            {error}
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
