@@ -1004,7 +1004,7 @@ const styles = {
   colorPalette: {
     display: 'grid',
     gridTemplateColumns: 'repeat(5, 1fr)',
-    gap: '12px',
+    gap: '5px',
     marginBottom: '12px'
   },
   colorSwatch: {
